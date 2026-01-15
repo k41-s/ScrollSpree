@@ -22,32 +22,32 @@ class ProductApiService(private val client: HttpClient) {
         size: Int = 10,
         sortBy: String = "id",
         direction: String = "asc"
-    ): ProductPageResponse
-    = client.get(BASE_URL) {
-        url {
-            search?.let { parameters.append("search", it) }
-            categoryId?.let { parameters.append("categoryId", it.toString()) }
-            parameters.append("page", page.toString())
-            parameters.append("size", size.toString())
-            parameters.append("sortBy", sortBy)
-            parameters.append("direction", direction)
+    ): ProductPageResponse =
+        client.get(BASE_URL) {
+            url {
+                search?.let { parameters.append("search", it) }
+                categoryId?.let { parameters.append("categoryId", it.toString()) }
+                parameters.append("page", page.toString())
+                parameters.append("size", size.toString())
+                parameters.append("sortBy", sortBy)
+                parameters.append("direction", direction)
+            }
+        }.body()
+
+    suspend fun getById(id: Int): ProductDTO =
+        client.get("$BASE_URL/$id").body()
+
+    suspend fun create(dto: ProductDTO): ProductDTO =
+        client.post(BASE_URL) {
+            setBody(dto)
+        }.body()
+
+    suspend fun update(id: Int, dto: ProductDTO): HttpResponse =
+        client.put("$BASE_URL/$id") {
+            setBody(dto)
         }
-    }.body()
 
-    suspend fun getById(id: Int): ProductDTO
-    = client.get("$BASE_URL/$id").body()
-
-    suspend fun create(dto: ProductDTO): ProductDTO
-    = client.post(BASE_URL) {
-        setBody(dto)
-    }.body()
-
-    suspend fun update(id: Int, dto: ProductDTO): HttpResponse
-    = client.put("$BASE_URL/$id") {
-        setBody(dto)
-    }
-
-    suspend fun delete(id: Int): HttpResponse
-    = client.delete("$BASE_URL/$id")
+    suspend fun delete(id: Int): HttpResponse =
+        client.delete("$BASE_URL/$id")
 
 }

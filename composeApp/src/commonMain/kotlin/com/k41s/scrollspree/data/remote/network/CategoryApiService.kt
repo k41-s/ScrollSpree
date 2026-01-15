@@ -14,23 +14,23 @@ private const val BASE_URL = "api/categories"
 
 class CategoryApiService(private val client: HttpClient) {
 
-    suspend fun getAll(): List<CategoryDTO>
-    = client.get(BASE_URL).body()
+    suspend fun getAll(): List<CategoryDTO> =
+        client.get(BASE_URL).body()
 
-    suspend fun getById(id: Int): CategoryDTO
-    = client.get("$BASE_URL/$id").body()
+    suspend fun getById(id: Int): CategoryDTO =
+        client.get("$BASE_URL/$id").body()
 
-    suspend fun create(dto: CategoryDTO): CategoryDTO
-    = client.post(BASE_URL) {
-        setBody(dto)
-    }.body()
+    suspend fun create(dto: CategoryDTO): CategoryDTO =
+        client.post(BASE_URL) {
+            setBody(dto)
+        }.body()
 
-    suspend fun update(id: Int, dto: CategoryDTO): HttpResponse
-    = client.put("$BASE_URL/$id") {
-        setBody(dto)
-    }
+    suspend fun update(id: Int, dto: CategoryDTO): HttpResponse =
+        client.put("$BASE_URL/$id") {
+            setBody(dto)
+        }
 
-    suspend fun delete(id: Int): HttpResponse
-    = client.delete("$BASE_URL/$id")
+    suspend fun delete(id: Int): HttpResponse =
+        client.delete("$BASE_URL/$id")
 
 }

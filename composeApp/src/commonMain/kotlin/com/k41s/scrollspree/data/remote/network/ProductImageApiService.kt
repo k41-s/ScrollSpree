@@ -15,20 +15,20 @@ private const val BASE_URL = "api/productimages"
 
 class ProductImageApiService(private val client: HttpClient) {
 
-    suspend fun getProductImage(id: Int): ByteArray
-    = client.get("$BASE_URL/$id").body()
+    suspend fun getProductImage(id: Int): ByteArray =
+        client.get("$BASE_URL/$id").body()
 
-    suspend fun uploadImage(productId: Int, fileBytes: ByteArray, fileName: String): ProductImageDTO
-    = client.submitFormWithBinaryData(
-        url = "$BASE_URL/upload/$productId",
-        formData = formData {
-            append("file", fileBytes, Headers.build {
-                append(HttpHeaders.ContentDisposition, "filename=\"$fileName\"")
-            })
-        }
-    ).body()
+    suspend fun uploadImage(productId: Int, fileBytes: ByteArray, fileName: String): ProductImageDTO =
+        client.submitFormWithBinaryData(
+            url = "$BASE_URL/upload/$productId",
+            formData = formData {
+                append("file", fileBytes, Headers.build {
+                    append(HttpHeaders.ContentDisposition, "filename=\"$fileName\"")
+                })
+            }
+        ).body()
 
-    suspend fun deleteProductImage(id: Int): HttpResponse
-    = client.delete("$BASE_URL/$id")
+    suspend fun deleteProductImage(id: Int): HttpResponse =
+        client.delete("$BASE_URL/$id")
 
 }
