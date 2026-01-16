@@ -1,25 +1,37 @@
-package com.k41s.scrollspree.ui.screens
+package com.k41s.scrollspree.ui.screens.login
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun LoginScreen(
-    onLoginClicked: (username: String, password: String) -> Unit
+    onNavigateToHome: () -> Unit
 ) {
-    var username by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    val viewModel: LoginViewModel = koinViewModel()
 
+    val state by viewModel.state.collectAsState()
     val colorScheme = MaterialTheme.colorScheme
+
+    val focusManager = LocalFocusManager.current
+
+    LaunchedEffect(state.isSuccess) {
+        if (state.isSuccess) onNavigateToHome()
+    }
 
     Column(
         modifier = Modifier
@@ -46,8 +58,8 @@ fun LoginScreen(
         Spacer(Modifier.height(16.dp))
 
         OutlinedTextField(
-            value = username,
-            onValueChange = { username = it },
+            value = state.username,
+            onValueChange = { viewModel.onUsernameChanged(it) },
             label = { Text("Username") },
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = colorScheme.primary,
@@ -56,14 +68,20 @@ fun LoginScreen(
                 focusedLeadingIconColor = colorScheme.primary
             ),
             singleLine = true,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Next
+            ),
+            keyboardActions = KeyboardActions(
+                onNext = { focusManager.moveFocus(FocusDirection.Down) }
+            )
         )
 
         Spacer(Modifier.height(16.dp))
 
         OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
+            value = state.password,
+            onValueChange = { viewModel.onPasswordChanged(it) },
             label = { Text("Password") },
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = colorScheme.primary,
@@ -73,14 +91,25 @@ fun LoginScreen(
             ),
             visualTransformation = PasswordVisualTransformation(),
             singleLine = true,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Done
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    focusManager.clearFocus()
+                    viewModel.onLoginClicked()
+                }
+            )
         )
 
         Spacer(Modifier.height(32.dp))
 
         Button(
-            onClick = { onLoginClicked(username, password) },
-            enabled = username.isNotBlank() && password.isNotBlank(),
+            onClick = { viewModel.onLoginClicked() },
+            enabled = !state.isLoading
+                    && state.username.isNotBlank()
+                    && state.password.length >= 4,
             colors = ButtonDefaults.buttonColors(
                 containerColor = colorScheme.secondary,
                 contentColor = colorScheme.onSecondary
@@ -89,7 +118,15 @@ fun LoginScreen(
                 .fillMaxWidth()
                 .height(56.dp)
         ) {
-            Text("Log In", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
+            if (state.isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(24.dp),
+                    color = colorScheme.onSecondary
+                )
+            }
+            else {
+                Text("Log In", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
+            }
         }
     }
 

@@ -4,8 +4,10 @@ import com.k41s.scrollspree.data.local.TokenManager
 import com.k41s.scrollspree.data.remote.configureSharedClient
 import com.k41s.scrollspree.data.remote.network.*
 import com.k41s.scrollspree.data.repository.*
+import com.k41s.scrollspree.ui.screens.login.LoginViewModel
 import io.ktor.client.HttpClient
 import org.koin.core.module.Module
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 val appModule = module {
@@ -33,6 +35,8 @@ val appModule = module {
     single { ProductImageRepository(get()) }
     single { ProductRepository(get()) }
     single { UserRepository(get()) }
+
+    viewModelOf(::LoginViewModel)
 }
 
 expect val platformModule: Module
