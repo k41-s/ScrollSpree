@@ -9,7 +9,7 @@ data class AuthenticatedUserDTO(
     val username: String,
     val email: String,
     val role: Role,
-    val name: String,
-    val surname: String,
-    val phone: String
+    val name: String?,
+    val surname: String?,
+    val phone: String?
 )

@@ -8,9 +8,9 @@ import com.k41s.scrollspree.domain.model.User
 fun AuthenticatedUserDTO.toDomain() = User(
     username = username,
     email = email,
-    firstName = name,
-    lastName = surname,
-    phone = phone,
+    firstName = name ?: "",
+    lastName = surname ?: "",
+    phone = phone ?: "",
     role = role,
     token = token
 )

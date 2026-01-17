@@ -2,7 +2,9 @@ package com.k41s.scrollspree.data.remote.dto
 
 import com.k41s.scrollspree.domain.model.enums.PaymentMethod
 import kotlinx.datetime.LocalDateTime
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class OrderDTO(
     val id: Int? = null,
     val productId: Int? = null,

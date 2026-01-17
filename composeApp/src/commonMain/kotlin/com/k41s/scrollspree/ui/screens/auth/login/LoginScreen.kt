@@ -1,4 +1,4 @@
-package com.k41s.scrollspree.ui.screens.login
+package com.k41s.scrollspree.ui.screens.auth.login
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -10,17 +10,19 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.k41s.scrollspree.domain.model.enums.Role
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun LoginScreen(
-    onNavigateToHome: () -> Unit
+    onNavigateToRegister: () -> Unit
 ) {
     val viewModel: LoginViewModel = koinViewModel()
 
@@ -28,10 +30,6 @@ fun LoginScreen(
     val colorScheme = MaterialTheme.colorScheme
 
     val focusManager = LocalFocusManager.current
-
-    LaunchedEffect(state.isSuccess) {
-        if (state.isSuccess) onNavigateToHome()
-    }
 
     Column(
         modifier = Modifier
@@ -43,14 +41,14 @@ fun LoginScreen(
     ) {
         Box(
             modifier = Modifier
-                .size(64.dp)
+                .size(150.dp)
                 .background(colorScheme.primary, RoundedCornerShape(12.dp)),
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = "SS",
+                text = "ScrollSpree",
                 color = colorScheme.onPrimary,
-                fontSize = 32.sp,
+                fontSize = 20.sp,
                 fontWeight = FontWeight.Bold
             )
         }
@@ -103,13 +101,21 @@ fun LoginScreen(
             )
         )
 
+        Spacer((Modifier.height(8.dp)))
+
+        if (state.errorMessage != null) {
+            Text(
+                state.errorMessage!!,
+                color = Color.Red,
+                fontWeight = FontWeight.Bold
+            )
+        }
+
         Spacer(Modifier.height(32.dp))
 
         Button(
             onClick = { viewModel.onLoginClicked() },
-            enabled = !state.isLoading
-                    && state.username.isNotBlank()
-                    && state.password.length >= 4,
+            enabled = viewModel.isFormValid(),
             colors = ButtonDefaults.buttonColors(
                 containerColor = colorScheme.secondary,
                 contentColor = colorScheme.onSecondary
@@ -125,7 +131,26 @@ fun LoginScreen(
                 )
             }
             else {
-                Text("Log In", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
+                Text(
+                    "Log In",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
+        }
+
+        Spacer(Modifier.height(16.dp))
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text("Don't have an account?", color = colorScheme.onPrimary)
+            TextButton(onClick = onNavigateToRegister) {
+                Text(
+                    "Go to register",
+                    color = colorScheme.primary,
+                    fontWeight = FontWeight.Bold
+                )
             }
         }
     }

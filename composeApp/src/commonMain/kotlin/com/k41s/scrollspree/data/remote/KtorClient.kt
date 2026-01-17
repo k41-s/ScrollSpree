@@ -9,6 +9,10 @@ import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BearerTokens
 import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.logging.LogLevel
+import io.ktor.client.plugins.logging.Logger
+import io.ktor.client.plugins.logging.Logging
+import io.ktor.client.plugins.logging.SIMPLE
 import io.ktor.client.request.header
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
@@ -49,11 +53,17 @@ fun HttpClientConfig<*>.configureSharedClient(tokenManager: TokenManager) {
 
     expectSuccess = true
 
+//    install(Logging) {
+//        level = LogLevel.INFO
+//        logger = Logger.SIMPLE
+//    }
+
     install(HttpCallValidator) {
         handleResponseExceptionWithRequest { cause, _ ->
             println("Network Error: ${cause.message}")
+            cause.printStackTrace()
         }
     }
 }
 
-expect val httpClient: HttpClient
+expect fun createHttpClient(tokenManager: TokenManager): HttpClient
