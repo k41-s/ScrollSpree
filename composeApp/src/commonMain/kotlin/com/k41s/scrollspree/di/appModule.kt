@@ -1,5 +1,6 @@
 package com.k41s.scrollspree.di
 
+import coil3.ImageLoader
 import com.k41s.scrollspree.data.local.TokenManager
 import com.k41s.scrollspree.data.remote.configureSharedClient
 import com.k41s.scrollspree.data.remote.createHttpClient
@@ -9,7 +10,11 @@ import com.k41s.scrollspree.ui.main.MainViewModel
 import com.k41s.scrollspree.ui.screens.auth.login.LoginViewModel
 import com.k41s.scrollspree.ui.screens.auth.register.RegisterViewModel
 import com.k41s.scrollspree.ui.screens.user.UserHomeViewModel
+import com.k41s.scrollspree.util.AuthenticatedImageLoader
 import io.ktor.client.HttpClient
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.serialization.json.Json
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModelOf
@@ -25,7 +30,9 @@ val appModule = module {
         }
     }
 
-    single { TokenManager(get()) }
+    single { CoroutineScope(Dispatchers.Default + SupervisorJob()) }
+
+    single { TokenManager(get(), get()) }
 
     single { createHttpClient(get()) }
 
@@ -44,6 +51,13 @@ val appModule = module {
     single { ProductImageRepository(get()) }
     single { ProductRepository(get()) }
     single { UserRepository(get()) }
+
+    single<ImageLoader> {
+        AuthenticatedImageLoader(
+            get(),
+            get()
+        ).getLoader()
+    }
 
     viewModelOf(::LoginViewModel)
     viewModelOf(::RegisterViewModel)

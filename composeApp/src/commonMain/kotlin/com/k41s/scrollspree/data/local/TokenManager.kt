@@ -5,10 +5,17 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.k41s.scrollspree.domain.model.enums.Role
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 
-class TokenManager(private val dataStore: DataStore<Preferences>) {
+class TokenManager(
+    private val dataStore: DataStore<Preferences>,
+    scope: CoroutineScope
+) {
 
     companion object {
         private val TOKEN_KEY = stringPreferencesKey("jwt_token")
@@ -16,7 +23,13 @@ class TokenManager(private val dataStore: DataStore<Preferences>) {
         private val USERNAME_KEY = stringPreferencesKey("user_name")
     }
 
-    val token: Flow<String?> = dataStore.data.map { it[TOKEN_KEY] }
+    val token: StateFlow<String?> = dataStore.data
+        .map { it[TOKEN_KEY] }
+        .stateIn(
+            scope = scope,
+            started = SharingStarted.Eagerly,
+            initialValue = null
+        )
     val username: Flow<String?> = dataStore.data.map { it[USERNAME_KEY] }
     val role: Flow<Role?> = dataStore.data.map { preferences ->
         preferences[ROLE_KEY]?.let {
