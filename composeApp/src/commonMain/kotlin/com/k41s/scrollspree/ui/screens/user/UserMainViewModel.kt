@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.k41s.scrollspree.data.repository.AuthRepository
 import kotlinx.coroutines.launch
 
-class UserHomeViewModel(
+class UserMainViewModel(
     private val authRepo: AuthRepository
 ) : ViewModel() {
 

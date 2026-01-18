@@ -26,6 +26,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.k41s.scrollspree.ui.navigation.UserNavigationActions
+import com.k41s.scrollspree.ui.screens.user.mainTabs.home.screens.UserHomeScreen
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -87,7 +88,9 @@ fun MainTabPagerScreen(
             when (page) {
                 0 -> FeatureComingSoonScreen("Info")
                 1 -> FeatureComingSoonScreen("Cart")
-                2 -> FeatureComingSoonScreen("HomeScreen")
+                2 -> UserHomeScreen { productId ->
+                    actions.navigateToDetail(productId)
+                }
                 3 -> FeatureComingSoonScreen("Favorites")
                 4 -> FeatureComingSoonScreen("Profile")
             }

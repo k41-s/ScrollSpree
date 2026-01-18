@@ -279,7 +279,7 @@ fun RegisterScreen(
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("Already have an account?", color = colorScheme.onPrimary)
+            Text("Already have an account?", color = colorScheme.onBackground)
             TextButton(onClick = onNavigateToLogin) {
                 Text(
                     "Go to login",

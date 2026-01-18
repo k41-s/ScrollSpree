@@ -8,5 +8,5 @@ sealed class UserRoute {
     data object MainTabs : UserRoute()
 
     @Serializable
-    data class ProductDetail(val productId: String) : UserRoute()
+    data class ProductDetail(val productId: Int) : UserRoute()
 }

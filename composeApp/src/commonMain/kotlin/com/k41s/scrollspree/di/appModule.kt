@@ -2,16 +2,15 @@ package com.k41s.scrollspree.di
 
 import coil3.ImageLoader
 import com.k41s.scrollspree.data.local.TokenManager
-import com.k41s.scrollspree.data.remote.configureSharedClient
 import com.k41s.scrollspree.data.remote.createHttpClient
 import com.k41s.scrollspree.data.remote.network.*
 import com.k41s.scrollspree.data.repository.*
 import com.k41s.scrollspree.ui.main.MainViewModel
 import com.k41s.scrollspree.ui.screens.auth.login.LoginViewModel
 import com.k41s.scrollspree.ui.screens.auth.register.RegisterViewModel
-import com.k41s.scrollspree.ui.screens.user.UserHomeViewModel
+import com.k41s.scrollspree.ui.screens.user.UserMainViewModel
+import com.k41s.scrollspree.ui.screens.user.mainTabs.home.UserHomeViewModel
 import com.k41s.scrollspree.util.AuthenticatedImageLoader
-import io.ktor.client.HttpClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -62,6 +61,7 @@ val appModule = module {
     viewModelOf(::LoginViewModel)
     viewModelOf(::RegisterViewModel)
     viewModelOf(::MainViewModel)
+    viewModelOf(::UserMainViewModel)
     viewModelOf(::UserHomeViewModel)
 }
 

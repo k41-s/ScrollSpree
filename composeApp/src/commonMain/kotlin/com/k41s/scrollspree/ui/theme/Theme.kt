@@ -18,7 +18,9 @@ val LightColorScheme = lightColorScheme(
     onSecondary = Color.White,
     tertiary = Color(0xFF000704),
     onTertiary = Color.White,
-    background = Color.White
+    background = Color.White,
+    onBackground = Color(0xFF000704),
+    error = Color(0xFF610404)
 )
 
 val DarkColorScheme = darkColorScheme(
@@ -28,7 +30,9 @@ val DarkColorScheme = darkColorScheme(
     onSecondary = Color.Black,
     tertiary = Color.White,
     onTertiary = Color.Black,
-    background = Color(0xFF000704)
+    background = Color(0xFF000704),
+    onBackground = Color.White,
+    error = Color(0xFF610404)
 )
 
 val BlackWhiteScheme = lightColorScheme(
@@ -38,7 +42,9 @@ val BlackWhiteScheme = lightColorScheme(
     onSecondary = Color.White,
     tertiary = Color(0xFF000704),
     onTertiary = Color.White,
-    background = Color.White
+    background = Color.White,
+    onBackground = Color(0xFF000704),
+    error = Color(0xFF610404)
 )
 
 @Composable

@@ -24,9 +24,9 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UserHomeContainer() {
+fun UserMainContainer() {
 
-    val viewModel: UserHomeViewModel = koinViewModel()
+    val viewModel: UserMainViewModel = koinViewModel()
     val navController = rememberNavController()
     val actions = remember(navController){
         UserNavigationActions(navController)
@@ -37,7 +37,9 @@ fun UserHomeContainer() {
         startDestination = UserRoute.MainTabs
     ) {
         composable<UserRoute.MainTabs> {
-            MainTabPagerScreen(actions, { viewModel.onLogoutClicked() })
+            MainTabPagerScreen(actions) {
+                viewModel.onLogoutClicked()
+            }
         }
 
         composable<UserRoute.ProductDetail> { backStackEntry ->

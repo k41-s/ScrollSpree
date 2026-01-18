@@ -7,7 +7,7 @@ class UserNavigationActions(
     private val navController: NavHostController
 ) {
 
-    val navigateToDetail: (String) -> Unit = { productId ->
+    val navigateToDetail: (Int) -> Unit = { productId ->
         navController.navigate(UserRoute.ProductDetail(productId))
     }
 

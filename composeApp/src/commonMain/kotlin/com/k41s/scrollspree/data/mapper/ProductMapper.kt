@@ -15,6 +15,7 @@ fun ProductDTO.toDomain(): Product =
         id = id ?: -1,
         name = name,
         description = description,
+        price = price,
         isDeleted = isDeleted,
         category = Category(
             id = categoryId ?: -1,

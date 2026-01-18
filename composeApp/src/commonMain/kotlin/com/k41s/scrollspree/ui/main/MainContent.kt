@@ -2,9 +2,7 @@ package com.k41s.scrollspree.ui.main
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -14,9 +12,8 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.k41s.scrollspree.ui.screens.auth.AuthContainer
-import com.k41s.scrollspree.ui.screens.user.UserHomeContainer
+import com.k41s.scrollspree.ui.screens.user.UserMainContainer
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -43,7 +40,7 @@ fun MainContent() {
                 AuthContainer()
             }
             is AppViewState.UserAuthenticated -> {
-                UserHomeContainer()
+                UserMainContainer()
             }
             is AppViewState.AdminAuthenticated -> {
                 // TODO: AdminDashboardContainer() needs creating
