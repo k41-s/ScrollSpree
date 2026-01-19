@@ -1,4 +1,4 @@
-package com.k41s.scrollspree.ui.screens.admin.category
+package com.k41s.scrollspree.ui.screens.admin.country
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,31 +29,31 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.k41s.scrollspree.domain.model.Category
+import com.k41s.scrollspree.domain.model.Country
 import com.k41s.scrollspree.ui.components.SimpleEntityCard
 
 @Composable
-fun AdminCategoryScreen(
-    categories: List<Category>,
-    onAddCategory: (String) -> Unit,
-    onUpdateCategory: (Int, String) -> Unit,
-    onDeleteCategory: (Int) -> Unit
+fun AdminCountryScreen(
+    countries: List<Country>,
+    onAddCountry: (String) -> Unit,
+    onUpdateCountry: (Int, String) -> Unit,
+    onDeleteCountry: (Int) -> Unit
 ) {
     var showDialog by remember { mutableStateOf(false) }
-    var selectedCategory by remember { mutableStateOf<Category?>(null) }
+    var selectedCountry by remember { mutableStateOf<Country?>(null) }
     var nameInput by remember { mutableStateOf("") }
 
     var showDeleteDialog by remember { mutableStateOf(false) }
-    var categoryToDelete by remember { mutableStateOf<Category?>(null) }
+    var countryToDelete by remember { mutableStateOf<Country?>(null) }
 
-    fun openEditDialog(category: Category? = null) {
-        selectedCategory = category
-        nameInput = category?.name ?: ""
+    fun openEditDialog(country: Country? = null) {
+        selectedCountry = country
+        nameInput = country?.name ?: ""
         showDialog = true
     }
 
-    fun openDeleteDialog(category: Category) {
-        categoryToDelete = category
+    fun openDeleteDialog(country: Country) {
+        countryToDelete = country
         showDeleteDialog = true
     }
 
@@ -63,11 +63,11 @@ fun AdminCategoryScreen(
                 onClick = { openEditDialog() },
                 containerColor = MaterialTheme.colorScheme.primary
             ) {
-                Icon(Icons.Default.Add, contentDescription = "Add Category")
+                Icon(Icons.Default.Add, contentDescription = "Add Country")
             }
         }
     ) { padding ->
-        if (categories.isEmpty()) {
+        if (countries.isEmpty()) {
             Box(
                 modifier = Modifier.fillMaxSize().padding(padding),
                 contentAlignment = Alignment.Center
@@ -80,11 +80,11 @@ fun AdminCategoryScreen(
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                items(categories) { category ->
+                items(countries) { country ->
                     SimpleEntityCard(
-                        name = category.name,
-                        onEdit = { openEditDialog(category) },
-                        onDelete = { openDeleteDialog(category) }
+                        name = country.name,
+                        onEdit = { openEditDialog(country) },
+                        onDelete = { openDeleteDialog(country) }
                     )
                 }
             }
@@ -93,13 +93,13 @@ fun AdminCategoryScreen(
         if (showDialog) {
             AlertDialog(
                 onDismissRequest = { showDialog = false },
-                title = { Text(if (selectedCategory == null) "New Category" else "Edit Category") },
+                title = { Text(if (selectedCountry == null) "New Country" else "Edit Country") },
                 text = {
                     Column {
                         OutlinedTextField(
                             value = nameInput,
                             onValueChange = { nameInput = it },
-                            label = { Text("Category Name") },
+                            label = { Text("Country Name") },
                             singleLine = true,
                             modifier = Modifier.fillMaxWidth()
                         )
@@ -109,16 +109,16 @@ fun AdminCategoryScreen(
                     Button(
                         onClick = {
                             if (nameInput.isNotBlank()) {
-                                if (selectedCategory == null) {
-                                    onAddCategory(nameInput)
+                                if (selectedCountry == null) {
+                                    onAddCountry(nameInput)
                                 } else {
-                                    onUpdateCategory(selectedCategory!!.id, nameInput)
+                                    onUpdateCountry(selectedCountry!!.id, nameInput)
                                 }
                                 showDialog = false
                             }
                         }
                     ) {
-                        Text(if (selectedCategory == null) "Create" else "Update")
+                        Text(if (selectedCountry == null) "Create" else "Update")
                     }
                 },
                 dismissButton = {
@@ -129,16 +129,16 @@ fun AdminCategoryScreen(
             )
         }
 
-        if (showDeleteDialog && categoryToDelete != null) {
+        if (showDeleteDialog && countryToDelete != null) {
             AlertDialog(
                 onDismissRequest = { showDeleteDialog = false },
-                title = { Text("Delete Category") },
-                text = { Text("Are you sure you want to delete '${categoryToDelete?.name}'?") },
+                title = { Text("Delete Country") },
+                text = { Text("Are you sure you want to delete '${countryToDelete?.name}'?") },
                 confirmButton = {
                     Button(
                         colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
                         onClick = {
-                            categoryToDelete?.let { onDeleteCategory(it.id) }
+                            countryToDelete?.let { onDeleteCountry(it.id) }
                             showDeleteDialog = false
                         }
                     ) {

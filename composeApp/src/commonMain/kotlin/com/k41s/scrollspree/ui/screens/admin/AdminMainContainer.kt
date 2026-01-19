@@ -7,11 +7,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Flag
+import androidx.compose.material.icons.filled.Inventory
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -22,6 +24,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import com.k41s.scrollspree.ui.components.FeatureComingSoonScreen
 import com.k41s.scrollspree.ui.screens.admin.category.AdminCategoryContainer
+import com.k41s.scrollspree.ui.screens.admin.country.AdminCountryContainer
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -34,10 +37,23 @@ fun AdminMainContainer(
     val pagerState = rememberPagerState(initialPage = 0, pageCount = {4})
     val scope = rememberCoroutineScope()
 
+    val screenName = when (pagerState.currentPage) {
+        0 -> "Categories"
+        1 -> "Countries"
+        2 -> "Products"
+        3 -> "Users & Orders"
+        else -> ""
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Admin Dashboard") },
+                title = {
+                    Text(
+                        "Admin Dashboard: $screenName",
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                },
                 actions = {
                     Button(onClick = onLogout) {
                         Text("Logout")
@@ -50,7 +66,7 @@ fun AdminMainContainer(
                 val tabs = listOf(
                     Triple(Icons.AutoMirrored.Filled.List, "Categories", 0),
                     Triple(Icons.Default.Flag, "Countries", 1),
-                    Triple(Icons.Default.Build, "Products", 2),
+                    Triple(Icons.Default.Inventory, "Products", 2),
                     Triple(Icons.Default.Person, "Users", 3)
                 )
 
@@ -81,7 +97,7 @@ fun AdminMainContainer(
         ) { page ->
             when (page) {
                 0 -> AdminCategoryContainer()
-                1 -> FeatureComingSoonScreen("Countries CRUD")
+                1 -> AdminCountryContainer()
                 2 -> FeatureComingSoonScreen("Products CRUD")
                 3 -> FeatureComingSoonScreen("Users & Orders")
             }

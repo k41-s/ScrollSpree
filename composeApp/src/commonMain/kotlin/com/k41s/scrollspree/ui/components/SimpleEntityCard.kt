@@ -21,11 +21,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.k41s.scrollspree.domain.model.Category
 
 @Composable
-fun AdminCategoryCard(
-    category: Category,
+fun SimpleEntityCard(
+    name: String,
     onEdit: () -> Unit,
     onDelete: () -> Unit
 ) {
@@ -44,15 +43,10 @@ fun AdminCategoryCard(
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = category.name,
+                    text = name,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface
-                )
-                Text(
-                    text = "ID: ${category.id}",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 
