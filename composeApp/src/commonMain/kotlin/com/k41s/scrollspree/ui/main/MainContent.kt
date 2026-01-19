@@ -12,6 +12,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.k41s.scrollspree.ui.screens.admin.AdminMainContainer
 import com.k41s.scrollspree.ui.screens.auth.AuthContainer
 import com.k41s.scrollspree.ui.screens.user.UserMainContainer
 import org.koin.compose.viewmodel.koinViewModel
@@ -43,21 +44,8 @@ fun MainContent() {
                 UserMainContainer()
             }
             is AppViewState.AdminAuthenticated -> {
-                // TODO: AdminDashboardContainer() needs creating
-
-                Scaffold(
-                    topBar = {
-                        TopAppBar(title = { Text("Admin Dashboard") })
-                    }
-                ) {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Button(onClick = { viewModel.logout() }) {
-                            Text("Logout")
-                        }
-                    }
+                AdminMainContainer {
+                    viewModel.logout()
                 }
             }
         }

@@ -6,6 +6,7 @@ import com.k41s.scrollspree.data.remote.createHttpClient
 import com.k41s.scrollspree.data.remote.network.*
 import com.k41s.scrollspree.data.repository.*
 import com.k41s.scrollspree.ui.main.MainViewModel
+import com.k41s.scrollspree.ui.screens.admin.category.AdminCategoryViewModel
 import com.k41s.scrollspree.ui.screens.auth.login.LoginViewModel
 import com.k41s.scrollspree.ui.screens.auth.register.RegisterViewModel
 import com.k41s.scrollspree.ui.screens.user.UserMainViewModel
@@ -65,6 +66,7 @@ val appModule = module {
     viewModelOf(::MainViewModel)
     viewModelOf(::UserMainViewModel)
     viewModelOf(::UserHomeViewModel)
+    viewModelOf(::AdminCategoryViewModel)
 
     viewModel { parameters ->
         ProductDetailViewModel(

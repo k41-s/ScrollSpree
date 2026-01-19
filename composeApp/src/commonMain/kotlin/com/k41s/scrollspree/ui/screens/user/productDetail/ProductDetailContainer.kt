@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import com.k41s.scrollspree.ui.screens.user.components.ErrorScreen
+import com.k41s.scrollspree.ui.components.ErrorScreen
 import com.k41s.scrollspree.ui.screens.user.productDetail.screens.ProductDetailLoadingScreen
 import com.k41s.scrollspree.ui.screens.user.productDetail.screens.ProductDetailScreen
 import org.koin.compose.viewmodel.koinViewModel

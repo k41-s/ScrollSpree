@@ -11,6 +11,7 @@ import com.k41s.scrollspree.util.NetworkResult
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.serialization.json.Json
 import kotlin.io.encoding.ExperimentalEncodingApi
 
@@ -43,7 +44,8 @@ class AuthRepository (
             tokenManager.saveAuthData(
                 responseDto.token,
                 responseDto.role,
-                responseDto.username
+                responseDto.username,
+                request.password
             )
             responseDto.toDomain()
         }
@@ -54,7 +56,8 @@ class AuthRepository (
             tokenManager.saveAuthData(
                 responseDto.token,
                 responseDto.role,
-                responseDto.username
+                responseDto.username,
+                request.password
             )
             responseDto.toDomain()
         }

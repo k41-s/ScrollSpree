@@ -1,48 +1,43 @@
-package com.k41s.scrollspree.ui.screens.user.mainTabs
+package com.k41s.scrollspree.ui.screens.admin
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.filled.Flag
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.k41s.scrollspree.ui.components.FeatureComingSoonScreen
-import com.k41s.scrollspree.ui.navigation.UserNavigationActions
-import com.k41s.scrollspree.ui.screens.user.mainTabs.home.UserHomeContainer
+import com.k41s.scrollspree.ui.screens.admin.category.AdminCategoryContainer
 import kotlinx.coroutines.launch
+import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainTabPagerScreen(
-    actions: UserNavigationActions,
+fun AdminMainContainer(
     onLogout: () -> Unit
 ) {
-    val pagerState = rememberPagerState(initialPage = 2, pageCount = {5})
+
+    val pagerState = rememberPagerState(initialPage = 0, pageCount = {4})
     val scope = rememberCoroutineScope()
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("ScrollSpree") },
+                title = { Text("Admin Dashboard") },
                 actions = {
                     Button(onClick = onLogout) {
                         Text("Logout")
@@ -53,14 +48,13 @@ fun MainTabPagerScreen(
         bottomBar = {
             NavigationBar {
                 val tabs = listOf(
-                    Icons.Default.Info to 0,
-                    Icons.Default.ShoppingCart to 1,
-                    Icons.Default.Home to 2,
-                    Icons.Default.Favorite to 3,
-                    Icons.Default.Person to 4
+                    Triple(Icons.AutoMirrored.Filled.List, "Categories", 0),
+                    Triple(Icons.Default.Flag, "Countries", 1),
+                    Triple(Icons.Default.Build, "Products", 2),
+                    Triple(Icons.Default.Person, "Users", 3)
                 )
 
-                tabs.forEach { (icon, index) ->
+                tabs.forEach { (icon, label, index) ->
                     NavigationBarItem(
                         selected = pagerState.currentPage == index,
                         onClick = {
@@ -71,11 +65,11 @@ fun MainTabPagerScreen(
                         icon = {
                             Icon(
                                 imageVector = icon,
-                                contentDescription = null
+                                contentDescription = label
                             )
                         },
-                        label = null,
-                        alwaysShowLabel = false
+                        label = { Text(label) },
+                        alwaysShowLabel = true
                     )
                 }
             }
@@ -83,17 +77,13 @@ fun MainTabPagerScreen(
     ) { innerPadding ->
         HorizontalPager(
             state = pagerState,
-            modifier = Modifier.padding(innerPadding),
-            userScrollEnabled = false
+            modifier = Modifier.padding(innerPadding)
         ) { page ->
             when (page) {
-                0 -> FeatureComingSoonScreen("Info")
-                1 -> FeatureComingSoonScreen("Cart")
-                2 -> UserHomeContainer { productId ->
-                    actions.navigateToDetail(productId)
-                }
-                3 -> FeatureComingSoonScreen("Favorites")
-                4 -> FeatureComingSoonScreen("Profile")
+                0 -> AdminCategoryContainer()
+                1 -> FeatureComingSoonScreen("Countries CRUD")
+                2 -> FeatureComingSoonScreen("Products CRUD")
+                3 -> FeatureComingSoonScreen("Users & Orders")
             }
         }
     }

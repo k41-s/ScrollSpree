@@ -1,4 +1,4 @@
-package com.k41s.scrollspree.ui.screens.user.components
+package com.k41s.scrollspree.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
