@@ -1,4 +1,4 @@
-package com.k41s.scrollspree.ui.screens.user.mainTabs.home.screens
+package com.k41s.scrollspree.ui.screens.user.mainTabs.home
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -6,12 +6,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import com.k41s.scrollspree.ui.screens.user.mainTabs.home.UserHomeUiState
-import com.k41s.scrollspree.ui.screens.user.mainTabs.home.UserHomeViewModel
+import com.k41s.scrollspree.ui.screens.user.components.ErrorScreen
+import com.k41s.scrollspree.ui.screens.user.mainTabs.home.screens.UserHomeEntryScreen
+import com.k41s.scrollspree.ui.screens.user.mainTabs.home.screens.UserHomeLoadingScreen
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun UserHomeScreen(
+fun UserHomeContainer(
     onProductClick: (Int) -> Unit
 ) {
     val viewModel: UserHomeViewModel = koinViewModel()
@@ -24,14 +25,14 @@ fun UserHomeScreen(
                 UserHomeLoadingScreen()
             }
             is UserHomeUiState.Error -> {
-                HomeErrorScreen(
+                ErrorScreen(
                     state.message
                 ) {
                     viewModel.loadProducts()
                 }
             }
             is UserHomeUiState.Success -> {
-                UserEntryScreen(
+                UserHomeEntryScreen(
                     state.products,
                     onProductClick
                 )

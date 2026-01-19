@@ -20,6 +20,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.k41s.scrollspree.ui.navigation.UserNavigationActions
 import com.k41s.scrollspree.ui.screens.user.mainTabs.MainTabPagerScreen
+import com.k41s.scrollspree.ui.screens.user.productDetail.ProductDetailContainer
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -45,29 +46,7 @@ fun UserMainContainer() {
         composable<UserRoute.ProductDetail> { backStackEntry ->
             val route: UserRoute.ProductDetail = backStackEntry.toRoute()
 
-            // Need to make actual screen, this is a placeholder for now
-            Scaffold(
-                topBar = {
-                    TopAppBar(
-                        title = { Text("Product ${route.productId}") },
-                        navigationIcon = {
-                            IconButton(onClick = { actions.goBack() }) {
-                                Icon(
-                                    Icons.AutoMirrored.Filled.ArrowBack,
-                                    "Back"
-                                )
-                            }
-                        }
-                    )
-                }
-            ) { padding ->
-                Box(
-                    Modifier.padding(padding).fillMaxSize(),
-                    Alignment.Center
-                ) {
-                    Text("Detail View for Product: ${route.productId}")
-                }
-            }
+            ProductDetailContainer(route.productId, actions.goBack, {})
         }
     }
 }

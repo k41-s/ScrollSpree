@@ -10,12 +10,14 @@ import com.k41s.scrollspree.ui.screens.auth.login.LoginViewModel
 import com.k41s.scrollspree.ui.screens.auth.register.RegisterViewModel
 import com.k41s.scrollspree.ui.screens.user.UserMainViewModel
 import com.k41s.scrollspree.ui.screens.user.mainTabs.home.UserHomeViewModel
+import com.k41s.scrollspree.ui.screens.user.productDetail.ProductDetailViewModel
 import com.k41s.scrollspree.util.AuthenticatedImageLoader
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.serialization.json.Json
 import org.koin.core.module.Module
+import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
@@ -63,6 +65,13 @@ val appModule = module {
     viewModelOf(::MainViewModel)
     viewModelOf(::UserMainViewModel)
     viewModelOf(::UserHomeViewModel)
+
+    viewModel { parameters ->
+        ProductDetailViewModel(
+            get(),
+            parameters.get()
+        )
+    }
 }
 
 expect val platformModule: Module

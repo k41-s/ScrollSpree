@@ -16,7 +16,7 @@ import com.k41s.scrollspree.domain.model.Product
 import com.k41s.scrollspree.ui.screens.user.components.ProductCard
 
 @Composable
-fun UserEntryScreen(
+fun UserHomeEntryScreen(
     products: List<Product>,
     onProductClick: (Int) -> Unit
 ) {

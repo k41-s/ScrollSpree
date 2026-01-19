@@ -1,4 +1,4 @@
-package com.k41s.scrollspree.ui.screens.user.mainTabs.home.screens
+package com.k41s.scrollspree.ui.screens.user.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,7 +16,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun HomeErrorScreen(
+fun ErrorScreen(
     message: String,
     onRetry: () -> Unit
 ) {
