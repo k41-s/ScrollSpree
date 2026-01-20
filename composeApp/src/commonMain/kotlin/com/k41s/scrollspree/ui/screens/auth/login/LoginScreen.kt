@@ -17,7 +17,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.k41s.scrollspree.domain.model.enums.Role
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -52,6 +51,15 @@ fun LoginScreen(
                 fontWeight = FontWeight.Bold
             )
         }
+
+        Spacer(Modifier.height(16.dp))
+
+        Text(
+            text = "Login",
+            color = colorScheme.onBackground,
+            fontSize = 25.sp,
+            fontWeight = FontWeight.Bold
+        )
 
         Spacer(Modifier.height(16.dp))
 
