@@ -1,6 +1,7 @@
 package com.k41s.scrollspree.data.repository
 
 import com.k41s.scrollspree.data.mapper.toDomain
+import com.k41s.scrollspree.data.mapper.toDto
 import com.k41s.scrollspree.data.remote.dto.ProductDTO
 import com.k41s.scrollspree.data.remote.network.ProductApiService
 import com.k41s.scrollspree.domain.model.Product
@@ -52,4 +53,10 @@ class ProductRepository (
             true
         }
 
+    suspend fun restore(product: Product): NetworkResult<Boolean> =
+        safeApiCall {
+            val dto = product.toDto().copy(isDeleted = false)
+            apiService.update(product.id, dto)
+            true
+        }
 }

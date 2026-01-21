@@ -5,10 +5,8 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
-import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Flag
 import androidx.compose.material.icons.filled.Inventory
-import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -25,8 +23,8 @@ import androidx.compose.ui.Modifier
 import com.k41s.scrollspree.ui.components.FeatureComingSoonScreen
 import com.k41s.scrollspree.ui.screens.admin.category.AdminCategoryContainer
 import com.k41s.scrollspree.ui.screens.admin.country.AdminCountryContainer
+import com.k41s.scrollspree.ui.screens.admin.product.main.AdminProductContainer
 import kotlinx.coroutines.launch
-import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -98,7 +96,7 @@ fun AdminMainContainer(
             when (page) {
                 0 -> AdminCategoryContainer()
                 1 -> AdminCountryContainer()
-                2 -> FeatureComingSoonScreen("Products CRUD")
+                2 -> AdminProductContainer()
                 3 -> FeatureComingSoonScreen("Users & Orders")
             }
         }

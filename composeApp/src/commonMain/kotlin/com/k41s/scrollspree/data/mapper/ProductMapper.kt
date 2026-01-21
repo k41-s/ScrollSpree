@@ -35,6 +35,21 @@ fun ProductDTO.toDomain(): Product =
         }
     )
 
+fun Product.toDto(): ProductDTO {
+    return ProductDTO(
+        id = this.id,
+        name = this.name,
+        description = this.description,
+        price = this.price,
+        categoryId = this.category.id,
+        categoryName = this.category.name,
+        isDeleted = this.isDeleted,
+        imageIds = this.images.map { it.id },
+        countryIds = this.countries.map { it.id },
+        countryNames = this.countries.map { it.name }
+    )
+}
+
 fun ProductImageDTO.toDomain(): ProductImage =
     ProductImage(
         id = id ?: -1,

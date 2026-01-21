@@ -5,7 +5,7 @@ data class Product(
     val name: String,
     val description: String,
     val price: Double,
-    val isDeleted: Boolean,
+    val isDeleted: Boolean = false,
     val category: Category,
     val images: List<ProductImage>,
     val countries: List<Country>

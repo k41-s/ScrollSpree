@@ -57,6 +57,9 @@ kotlin {
             implementation(libs.ktor.client.logging)
             implementation(libs.coil.compose)
             implementation(libs.coil.network.ktor3)
+            implementation(libs.media.compose)
+            implementation(libs.permissions.compose)
+            implementation(libs.media)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

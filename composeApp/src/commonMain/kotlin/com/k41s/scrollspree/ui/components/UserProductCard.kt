@@ -24,7 +24,7 @@ import com.k41s.scrollspree.domain.model.Product
 import org.koin.compose.koinInject
 
 @Composable
-fun ProductCard(
+fun UserProductCard(
     product: Product,
     onClick: () -> Unit
 ) {

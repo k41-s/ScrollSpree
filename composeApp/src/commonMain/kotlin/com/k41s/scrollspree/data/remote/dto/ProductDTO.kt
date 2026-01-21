@@ -8,7 +8,7 @@ data class ProductDTO(
     val name: String,
     val description: String,
     val price: Double,
-    val isDeleted: Boolean,
+    val isDeleted: Boolean = false,
     val categoryId: Int? = null,
     val categoryName: String,
     val imageIds: List<Int>,

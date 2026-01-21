@@ -21,7 +21,9 @@ ktor_version = "3.3.3"
 kotlinx-datetime = "0.7.1"
 datastore = "1.2.0"
 koin = "4.1.1"
+mediaCompose = "0.11.1"
 navigationComposeVersion = "2.9.1"
+permissionsCompose = "0.16.0"
 
 [libraries]
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
@@ -48,8 +50,11 @@ koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
 koin-compose-viewModel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin" }
+media = { module = "dev.icerock.moko:media", version.ref = "mediaCompose" }
+media-compose = { module = "dev.icerock.moko:media-compose", version.ref = "mediaCompose" }
 navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigationComposeVersion" }
 ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor_version" }
+permissions-compose = { module = "dev.icerock.moko:permissions-compose", version.ref = "permissionsCompose" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

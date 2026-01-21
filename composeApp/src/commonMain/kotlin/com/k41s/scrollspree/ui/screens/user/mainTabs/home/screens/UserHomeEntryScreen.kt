@@ -13,7 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.k41s.scrollspree.domain.model.Product
-import com.k41s.scrollspree.ui.components.ProductCard
+import com.k41s.scrollspree.ui.components.UserProductCard
 
 @Composable
 fun UserHomeEntryScreen(
@@ -33,7 +33,7 @@ fun UserHomeEntryScreen(
             modifier = Modifier.fillMaxSize()
         ) {
             items(products) { product ->
-                ProductCard(
+                UserProductCard(
                     product = product
                 ) {
                     onProductClick(product.id)
