@@ -22,6 +22,7 @@ import io.ktor.http.contentType
 import io.ktor.http.encodedPath
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 
 const val API_URL = "https://conformal-eula-nonapostolically.ngrok-free.dev"
@@ -39,17 +40,15 @@ fun HttpClientConfig<*>.configureSharedClient(tokenManager: TokenManager) {
         url(API_URL)
         header(HttpHeaders.ContentType, ContentType.Application.Json)
         header("ngrok-skip-browser-warning", "true")
+
+        val currentToken = runBlocking { tokenManager.token.value }
+        if (!currentToken.isNullOrBlank()) {
+            header(HttpHeaders.Authorization, "Bearer $currentToken")
+        }
     }
 
     install(Auth) {
         bearer {
-            loadTokens {
-                val token = tokenManager.token.value
-                if (!token.isNullOrBlank()) {
-                    BearerTokens(accessToken = token, refreshToken = "")
-                } else null
-            }
-
             refreshTokens {
                 refreshTokens(tokenManager)
             }
@@ -91,6 +90,7 @@ private suspend fun refreshTokens(tokenManager: TokenManager): BearerTokens? {
                     authDto.token,
                     authDto.role,
                     username,
+                    authDto.email,
                     password
                 )
                 BearerTokens(accessToken = authDto.token, refreshToken = "")

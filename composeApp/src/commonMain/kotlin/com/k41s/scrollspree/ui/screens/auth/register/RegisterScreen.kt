@@ -99,8 +99,8 @@ fun RegisterScreen(
                 cursorColor = colorScheme.primary,
                 focusedLeadingIconColor = colorScheme.primary
             ),
-            singleLine = true,
             modifier = Modifier.fillMaxWidth(),
+            singleLine = true,
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Next
             ),

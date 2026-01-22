@@ -22,5 +22,6 @@ data class ProductFormActions(
     val onImageSelected: (ByteArray?) -> Unit,
     val onToggleCountry: (Int) -> Unit,
     val onSave: () -> Unit,
-    val onDismiss: () -> Unit
+    val onDismiss: () -> Unit,
+    val onError: (String) -> Unit
 )

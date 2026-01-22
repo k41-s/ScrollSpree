@@ -6,12 +6,16 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddAPhoto
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,17 +23,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.ImageLoader
-import coil3.Uri
 import coil3.compose.AsyncImage
-import com.k41s.scrollspree.data.local.TokenManager
 import org.koin.compose.koinInject
 
 @Composable
 fun ProductImagePicker(
     selectedBytes: ByteArray?,
-    onPickImage: () -> Unit
+    onPickImage: () -> Unit,
+    onClearImage: () -> Unit,
 ) {
-    val tokenManager = koinInject<TokenManager>()
     val imageLoader = koinInject<ImageLoader>()
 
     Box(
@@ -49,6 +51,25 @@ fun ProductImagePicker(
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop
             )
+
+            Surface(
+                onClick = {
+                    onClearImage()
+                },
+                color = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.8f),
+                contentColor = MaterialTheme.colorScheme.error,
+                shape = CircleShape,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(8.dp)
+                    .size(32.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Close,
+                    contentDescription = "Remove Photo",
+                    modifier = Modifier.padding(6.dp)
+                )
+            }
         } else {
             Icon(
                 Icons.Default.AddAPhoto,

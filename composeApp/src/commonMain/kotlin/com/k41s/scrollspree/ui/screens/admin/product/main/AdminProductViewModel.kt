@@ -223,7 +223,8 @@ class AdminProductViewModel(
         onImageSelected = { formState = formState.copy(imageBytes = it) },
         onSave = { saveProduct() },
         onToggleCountry = { toggleCountry(it) },
-        onDismiss = { isAddEditDialogVisible = false }
+        onDismiss = { isAddEditDialogVisible = false },
+        onError = { formState = formState.copy(errorMessage = it) }
     )
 
     fun deleteProduct(id: Int) {

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
@@ -21,6 +22,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.k41s.scrollspree.domain.model.Category
@@ -40,6 +44,7 @@ fun ProductFormDialog(
     categories: List<Category>,
     countries: List<Country>
 ) {
+    val focusManager = LocalFocusManager.current
 
     val mediaFactory = rememberMediaPickerControllerFactory()
     val picker = remember(mediaFactory) { mediaFactory.createMediaPickerController() }
@@ -81,20 +86,29 @@ fun ProductFormDialog(
                     onPickImage = {
                         scope.launch {
                             try {
+                                actions.onError("")
                                 permissions.providePermission(dev.icerock.moko.permissions.Permission.GALLERY)
                                 val result = picker.pickImage(dev.icerock.moko.media.picker.MediaSource.GALLERY)
                                 actions.onImageSelected(result.toByteArray())
                             } catch (e: Exception) {
-                                // Handle cancel
+                                handlePickerError(e, actions.onError)
                             }
                         }
-                    }
+                    },
+                    onClearImage = { actions.onImageSelected(null) }
                 )
 
                 OutlinedTextField(
                     value = state.name,
                     onValueChange = actions.onNameChange,
-                    label = { Text("Name") }
+                    label = { Text("Name") },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Next
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                    )
                 )
 
                 OutlinedTextField(
@@ -102,14 +116,29 @@ fun ProductFormDialog(
                     onValueChange = actions.onPriceChange,
                     label = { Text("Price") },
                     prefix = { Text("$ ") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Decimal,
+                        imeAction = ImeAction.Next
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                    )
                 )
 
                 OutlinedTextField(
                     value = state.description,
                     onValueChange = actions.onDescriptionChange,
                     label = { Text("Description") },
-                    minLines = 3
+                    minLines = 3,
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            focusManager.clearFocus()
+                        }
+                    )
                 )
 
                 CategoryDropdown(
@@ -145,4 +174,21 @@ fun ProductFormDialog(
         },
         dismissButton = { TextButton(onClick = actions.onDismiss) { Text("Cancel") } }
     )
+}
+
+private fun handlePickerError(e: Exception, onError: (String) -> Unit) {
+    when (e) {
+        is dev.icerock.moko.permissions.DeniedException -> {
+            onError("Gallery permission was denied.")
+        }
+        is dev.icerock.moko.permissions.DeniedAlwaysException -> {
+            onError("Permission permanently denied. Please enable it in settings.")
+        }
+        is kotlinx.coroutines.CancellationException -> {
+            // Do nothing, user just closed the picker
+        }
+        else -> {
+            onError("An unexpected error occurred: ${e.message}")
+        }
+    }
 }

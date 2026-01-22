@@ -13,6 +13,7 @@ import com.k41s.scrollspree.ui.screens.auth.login.LoginViewModel
 import com.k41s.scrollspree.ui.screens.auth.register.RegisterViewModel
 import com.k41s.scrollspree.ui.screens.user.UserMainViewModel
 import com.k41s.scrollspree.ui.screens.user.mainTabs.home.UserHomeViewModel
+import com.k41s.scrollspree.ui.screens.user.mainTabs.profile.UserProfileViewModel
 import com.k41s.scrollspree.ui.screens.user.productDetail.ProductDetailViewModel
 import com.k41s.scrollspree.util.AuthenticatedImageLoader
 import kotlinx.coroutines.CoroutineScope
@@ -68,6 +69,7 @@ val appModule = module {
     viewModelOf(::MainViewModel)
     viewModelOf(::UserMainViewModel)
     viewModelOf(::UserHomeViewModel)
+    viewModelOf(::UserProfileViewModel)
     viewModelOf(::AdminCategoryViewModel)
     viewModelOf(::AdminCountryViewModel)
     viewModelOf(::AdminProductViewModel)
