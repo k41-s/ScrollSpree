@@ -1,21 +1,22 @@
 package com.k41s.scrollspree
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import com.k41s.scrollspree.ui.main.MainContent
+import com.k41s.scrollspree.ui.main.MainViewModel
 import com.k41s.scrollspree.ui.theme.AppTheme
-import com.k41s.scrollspree.ui.theme.Theme
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun App() {
-    val systemIsDark = isSystemInDarkTheme()
-    val currentTheme = if (systemIsDark) Theme.DARK else Theme.LIGHT
+    val mainViewModel: MainViewModel = koinViewModel()
 
-    AppTheme(currentTheme) {
+    val savedTheme by mainViewModel.themePreference.collectAsState()
+
+    AppTheme(savedTheme) {
         Surface(
             modifier = Modifier
                 .fillMaxSize()

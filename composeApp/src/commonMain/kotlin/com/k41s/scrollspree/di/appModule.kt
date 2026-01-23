@@ -1,6 +1,7 @@
 package com.k41s.scrollspree.di
 
 import coil3.ImageLoader
+import com.k41s.scrollspree.data.local.SettingsManager
 import com.k41s.scrollspree.data.local.TokenManager
 import com.k41s.scrollspree.data.remote.createHttpClient
 import com.k41s.scrollspree.data.remote.network.*
@@ -14,6 +15,7 @@ import com.k41s.scrollspree.ui.screens.auth.register.RegisterViewModel
 import com.k41s.scrollspree.ui.screens.user.UserMainViewModel
 import com.k41s.scrollspree.ui.screens.user.mainTabs.home.UserHomeViewModel
 import com.k41s.scrollspree.ui.screens.user.mainTabs.profile.UserProfileViewModel
+import com.k41s.scrollspree.ui.screens.user.mainTabs.settings.UserSettingsViewModel
 import com.k41s.scrollspree.ui.screens.user.productDetail.ProductDetailViewModel
 import com.k41s.scrollspree.util.AuthenticatedImageLoader
 import kotlinx.coroutines.CoroutineScope
@@ -38,6 +40,7 @@ val appModule = module {
     single { CoroutineScope(Dispatchers.Default + SupervisorJob()) }
 
     single { TokenManager(get(), get()) }
+    single { SettingsManager(get()) }
 
     single { createHttpClient(get()) }
 
@@ -70,6 +73,7 @@ val appModule = module {
     viewModelOf(::UserMainViewModel)
     viewModelOf(::UserHomeViewModel)
     viewModelOf(::UserProfileViewModel)
+    viewModelOf(::UserSettingsViewModel)
     viewModelOf(::AdminCategoryViewModel)
     viewModelOf(::AdminCountryViewModel)
     viewModelOf(::AdminProductViewModel)

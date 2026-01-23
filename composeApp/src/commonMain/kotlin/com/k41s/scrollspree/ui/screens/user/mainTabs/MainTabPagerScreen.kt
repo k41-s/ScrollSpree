@@ -6,8 +6,8 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -24,6 +24,7 @@ import com.k41s.scrollspree.ui.components.FeatureComingSoonScreen
 import com.k41s.scrollspree.ui.navigation.UserNavigationActions
 import com.k41s.scrollspree.ui.screens.user.mainTabs.home.UserHomeContainer
 import com.k41s.scrollspree.ui.screens.user.mainTabs.profile.UserProfileScreen
+import com.k41s.scrollspree.ui.screens.user.mainTabs.settings.UserSettingsScreen
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -49,7 +50,7 @@ fun MainTabPagerScreen(
         bottomBar = {
             NavigationBar {
                 val tabs = listOf(
-                    Icons.Default.Info to 0,
+                    Icons.Default.Settings to 0,
                     Icons.Default.ShoppingCart to 1,
                     Icons.Default.Home to 2,
                     Icons.Default.Favorite to 3,
@@ -83,7 +84,7 @@ fun MainTabPagerScreen(
             userScrollEnabled = false
         ) { page ->
             when (page) {
-                0 -> FeatureComingSoonScreen("Info")
+                0 -> UserSettingsScreen()
                 1 -> FeatureComingSoonScreen("Cart")
                 2 -> UserHomeContainer { productId ->
                     actions.navigateToDetail(productId)

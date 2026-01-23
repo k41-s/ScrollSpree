@@ -8,7 +8,8 @@ import androidx.compose.ui.graphics.Color
 enum class Theme{
     LIGHT,
     DARK,
-    BLACK_WHITE
+    BLACK_WHITE,
+    SYSTEM
 }
 
 val LightColorScheme = lightColorScheme(
@@ -49,13 +50,21 @@ val BlackWhiteScheme = lightColorScheme(
 
 @Composable
 fun AppTheme(
-    selectedTheme: Theme = if (isSystemInDarkTheme()) Theme.DARK else Theme.LIGHT,
+    selectedTheme: Theme = Theme.SYSTEM,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = when (selectedTheme) {
+    val systemIsDark = isSystemInDarkTheme()
+
+    val effectiveTheme = when (selectedTheme) {
+        Theme.SYSTEM -> if (systemIsDark) Theme.DARK else Theme.LIGHT
+        else -> selectedTheme
+    }
+
+    val colorScheme = when (effectiveTheme) {
         Theme.DARK -> DarkColorScheme
         Theme.LIGHT -> LightColorScheme
         Theme.BLACK_WHITE -> BlackWhiteScheme
+        Theme.SYSTEM -> if (systemIsDark) DarkColorScheme else LightColorScheme
     }
 
     MaterialTheme(
