@@ -4,8 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.k41s.scrollspree.data.repository.AuthRepository
 import com.k41s.scrollspree.domain.model.enums.Role
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class MainViewModel (
@@ -21,15 +24,17 @@ class MainViewModel (
 
     private fun observeAuthStatus() {
         viewModelScope.launch {
-            repository.getCurrentUser().collect { user ->
-                if (user != null) {
-                    if (user.role == Role.ADMIN)
-                        _viewState.value = AppViewState.AdminAuthenticated
-                    else
-                        _viewState.value = AppViewState.UserAuthenticated
-                } else {
-                    _viewState.value = AppViewState.Unauthorized
-                }
+            val userDeferred = async { repository.getCurrentUser().first() }
+            val timerDeferred = async { delay(2000) }
+
+            val user = userDeferred.await()
+            timerDeferred.await()
+
+            if (user != null) {
+                _viewState.value = if (user.role == Role.ADMIN)
+                    AppViewState.AdminAuthenticated else AppViewState.UserAuthenticated
+            } else {
+                _viewState.value = AppViewState.Unauthorized
             }
         }
     }
