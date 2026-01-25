@@ -19,8 +19,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
@@ -31,10 +29,9 @@ import com.k41s.scrollspree.domain.model.Category
 import com.k41s.scrollspree.domain.model.Country
 import com.k41s.scrollspree.ui.screens.admin.product.models.ProductFormActions
 import com.k41s.scrollspree.ui.screens.admin.product.models.ProductFormState
-import dev.icerock.moko.media.compose.BindMediaPickerEffect
-import dev.icerock.moko.media.compose.rememberMediaPickerControllerFactory
-import dev.icerock.moko.permissions.compose.BindEffect
-import dev.icerock.moko.permissions.compose.rememberPermissionsControllerFactory
+import dev.icerock.moko.media.picker.MediaPickerController
+import dev.icerock.moko.permissions.PermissionsController
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
@@ -42,20 +39,12 @@ fun ProductFormDialog(
     state: ProductFormState,
     actions: ProductFormActions,
     categories: List<Category>,
-    countries: List<Country>
+    countries: List<Country>,
+    picker: MediaPickerController,
+    permissions: PermissionsController,
+    scope: CoroutineScope
 ) {
     val focusManager = LocalFocusManager.current
-
-    val mediaFactory = rememberMediaPickerControllerFactory()
-    val picker = remember(mediaFactory) { mediaFactory.createMediaPickerController() }
-
-    val permissionFactory = rememberPermissionsControllerFactory()
-    val permissions = remember(permissionFactory) { permissionFactory.createPermissionsController() }
-
-    val scope = rememberCoroutineScope()
-
-    BindMediaPickerEffect(picker)
-    BindEffect(permissions)
 
     AlertDialog(
         onDismissRequest = actions.onDismiss,
@@ -177,6 +166,7 @@ fun ProductFormDialog(
 }
 
 private fun handlePickerError(e: Exception, onError: (String) -> Unit) {
+    e.printStackTrace()
     when (e) {
         is dev.icerock.moko.permissions.DeniedException -> {
             onError("Gallery permission was denied.")
@@ -188,7 +178,7 @@ private fun handlePickerError(e: Exception, onError: (String) -> Unit) {
             // Do nothing, user just closed the picker
         }
         else -> {
-            onError("An unexpected error occurred: ${e.message}")
+            onError("Error (${e::class.simpleName}): ${e.message ?: "No message provided"}")
         }
     }
 }

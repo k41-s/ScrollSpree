@@ -1,4 +1,4 @@
-package com.k41s.scrollspree.util
+package com.k41s.scrollspree.util.images
 
 import coil3.ImageLoader
 import coil3.PlatformContext

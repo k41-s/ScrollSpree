@@ -19,7 +19,7 @@ import com.k41s.scrollspree.ui.screens.user.mainTabs.settings.UserSettingsViewMo
 import com.k41s.scrollspree.ui.screens.user.myOrders.MyOrdersViewModel
 import com.k41s.scrollspree.ui.screens.user.placeOrder.PlaceOrderViewModel
 import com.k41s.scrollspree.ui.screens.user.productDetail.ProductDetailViewModel
-import com.k41s.scrollspree.util.AuthenticatedImageLoader
+import com.k41s.scrollspree.util.images.AuthenticatedImageLoader
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob

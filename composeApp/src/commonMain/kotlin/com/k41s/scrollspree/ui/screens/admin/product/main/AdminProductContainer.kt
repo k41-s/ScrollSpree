@@ -10,11 +10,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.k41s.scrollspree.ui.components.BasicLoadingScreen
 import com.k41s.scrollspree.ui.components.ErrorScreen
 import com.k41s.scrollspree.ui.screens.admin.product.components.ProductFormDialog
+import dev.icerock.moko.media.compose.BindMediaPickerEffect
+import dev.icerock.moko.media.compose.rememberMediaPickerControllerFactory
+import dev.icerock.moko.permissions.compose.BindEffect
+import dev.icerock.moko.permissions.compose.rememberPermissionsControllerFactory
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -23,6 +28,17 @@ fun AdminProductContainer() {
     val viewModel: AdminProductViewModel = koinViewModel()
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
+
+    val mediaFactory = rememberMediaPickerControllerFactory()
+    val picker = remember(mediaFactory) { mediaFactory.createMediaPickerController() }
+
+    val permissionFactory = rememberPermissionsControllerFactory()
+    val permissions = remember(permissionFactory) { permissionFactory.createPermissionsController() }
+
+    BindMediaPickerEffect(picker)
+    BindEffect(permissions)
+
+    val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
@@ -71,7 +87,10 @@ fun AdminProductContainer() {
                     state = viewModel.formState,
                     actions = viewModel.getFormActions(),
                     categories = viewModel.getCategories(),
-                    countries = viewModel.getCountries()
+                    countries = viewModel.getCountries(),
+                    picker = picker,
+                    permissions = permissions,
+                    scope = scope
                 )
             }
 

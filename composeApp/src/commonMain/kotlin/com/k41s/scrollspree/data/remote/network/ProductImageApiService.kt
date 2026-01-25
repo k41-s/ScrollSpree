@@ -1,6 +1,7 @@
 package com.k41s.scrollspree.data.remote.network
 
 import com.k41s.scrollspree.data.remote.dto.ProductImageDTO
+import com.k41s.scrollspree.util.images.detectMimeType
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.delete
@@ -18,15 +19,19 @@ class ProductImageApiService(private val client: HttpClient) {
     suspend fun getProductImage(id: Int): ByteArray =
         client.get("$BASE_URL/$id").body()
 
-    suspend fun uploadImage(productId: Int, fileBytes: ByteArray, fileName: String): ProductImageDTO =
-        client.submitFormWithBinaryData(
+    suspend fun uploadImage(productId: Int, fileBytes: ByteArray, fileName: String): ProductImageDTO {
+        val mimeType = detectMimeType(fileBytes)
+
+        return client.submitFormWithBinaryData(
             url = "$BASE_URL/upload/$productId",
             formData = formData {
                 append("file", fileBytes, Headers.build {
+                    append(HttpHeaders.ContentType, mimeType)
                     append(HttpHeaders.ContentDisposition, "filename=\"$fileName\"")
                 })
             }
         ).body()
+    }
 
     suspend fun deleteProductImage(id: Int): HttpResponse =
         client.delete("$BASE_URL/$id")
