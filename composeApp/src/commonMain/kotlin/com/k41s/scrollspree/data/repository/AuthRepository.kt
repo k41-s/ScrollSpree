@@ -1,13 +1,11 @@
 package com.k41s.scrollspree.data.repository
 
-import androidx.compose.ui.autofill.ContentType
 import com.k41s.scrollspree.data.local.TokenManager
 import com.k41s.scrollspree.data.mapper.toDomain
-import com.k41s.scrollspree.data.remote.API_URL
+import com.k41s.scrollspree.util.API_URL
 import com.k41s.scrollspree.data.remote.dto.AuthenticatedUserDTO
 import com.k41s.scrollspree.data.remote.dto.LoginDTO
 import com.k41s.scrollspree.data.remote.dto.RegisterUserDTO
-import com.k41s.scrollspree.data.remote.dto.UserDTO
 import com.k41s.scrollspree.data.remote.network.AuthApiService
 import com.k41s.scrollspree.domain.model.AuthenticatedUser
 import com.k41s.scrollspree.domain.model.User
@@ -19,12 +17,9 @@ import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.HttpHeaders
-import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.serialization.json.Json
 import kotlin.io.encoding.ExperimentalEncodingApi
 

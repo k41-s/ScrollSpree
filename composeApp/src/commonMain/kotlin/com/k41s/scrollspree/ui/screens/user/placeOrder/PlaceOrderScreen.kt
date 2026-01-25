@@ -45,6 +45,7 @@ fun PlaceOrderScreen(
     }
 
     Scaffold(
+        contentWindowInsets = WindowInsets.systemBars.only(WindowInsetsSides.Bottom),
         topBar = {
             CenterAlignedTopAppBar(
                 title = { Text("Checkout") },
@@ -57,23 +58,29 @@ fun PlaceOrderScreen(
         },
         bottomBar = {
             state.product?.let { product ->
-                Button(
-                    onClick = { viewModel.submitOrder(productId) },
-                    enabled = !state.isLoading,
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp)
-                        .height(56.dp),
-                    shape = RoundedCornerShape(12.dp)
+                        .navigationBarsPadding()
                 ) {
-                    if (state.isLoading) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(24.dp),
-                            strokeWidth = 2.dp,
-                            color = MaterialTheme.colorScheme.onPrimary
-                        )
-                    } else {
-                        Text("Confirm Order - $${product.price}")
+                    Button(
+                        onClick = { viewModel.submitOrder(productId) },
+                        enabled = !state.isLoading,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                            .height(56.dp),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        if (state.isLoading) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(24.dp),
+                                strokeWidth = 2.dp,
+                                color = MaterialTheme.colorScheme.onPrimary
+                            )
+                        } else {
+                            Text("Confirm Order - $${product.price}")
+                        }
                     }
                 }
             }
@@ -92,7 +99,6 @@ fun PlaceOrderScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .navigationBarsPadding()
                         .verticalScroll(rememberScrollState())
                         .padding(16.dp)
                 ) {

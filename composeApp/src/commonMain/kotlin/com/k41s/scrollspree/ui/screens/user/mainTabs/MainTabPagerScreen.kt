@@ -1,5 +1,6 @@
 package com.k41s.scrollspree.ui.screens.user.mainTabs
 
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -37,6 +38,7 @@ fun MainTabPagerScreen(
     val scope = rememberCoroutineScope()
 
     Scaffold(
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 title = { Text("ScrollSpree") },
@@ -90,7 +92,7 @@ fun MainTabPagerScreen(
                     actions.navigateToDetail(productId)
                 }
                 3 -> FeatureComingSoonScreen("Favorites")
-                4 -> UserProfileScreen()
+                4 -> UserProfileScreen(actions.navigateToMyOrders)
             }
         }
     }

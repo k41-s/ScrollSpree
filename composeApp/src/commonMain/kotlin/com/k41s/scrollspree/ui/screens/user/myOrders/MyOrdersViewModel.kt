@@ -1,0 +1,60 @@
+package com.k41s.scrollspree.ui.screens.user.myOrders
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.k41s.scrollspree.data.local.TokenManager
+import com.k41s.scrollspree.data.repository.OrderRepository
+import com.k41s.scrollspree.data.repository.UserRepository
+import com.k41s.scrollspree.util.NetworkResult
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+
+class MyOrdersViewModel(
+    private val orderRepository: OrderRepository,
+    private val userRepository: UserRepository,
+    private val tokenManager: TokenManager
+) : ViewModel() {
+    private val _uiState = MutableStateFlow<MyOrdersUiState>(MyOrdersUiState.Loading)
+    val uiState = _uiState.asStateFlow()
+
+    init {
+        loadOrders()
+    }
+
+    fun loadOrders() {
+        viewModelScope.launch {
+            _uiState.value = MyOrdersUiState.Loading
+
+            val email = tokenManager.email.first()
+            if (email == null) {
+                _uiState.value = MyOrdersUiState.Error("User session not found.")
+                return@launch
+            }
+
+            val userResult = userRepository.getByEmail(email)
+            if (userResult is NetworkResult.Success) {
+                val userId = userResult.data.id
+
+                if (userId != null) {
+                    when (val orderResult = orderRepository.getUserOrders(userId)) {
+                        is NetworkResult.Success -> {
+                            _uiState.value = MyOrdersUiState.Success(orderResult.data)
+                        }
+
+                        is NetworkResult.Error -> {
+                            _uiState.value = MyOrdersUiState.Error(orderResult.message)
+                        }
+                        else -> { /* UI state loading by default */ }
+                    }
+                } else {
+                    _uiState.value = MyOrdersUiState.Error("User ID is missing. Please re-login.")
+                }
+            } else {
+                val error = (userResult as? NetworkResult.Error)?.message ?: "Failed to load user profile"
+                _uiState.value = MyOrdersUiState.Error(error)
+            }
+        }
+    }
+}

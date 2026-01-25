@@ -3,6 +3,7 @@ package com.k41s.scrollspree.data.remote
 import com.k41s.scrollspree.data.local.TokenManager
 import com.k41s.scrollspree.data.remote.dto.AuthenticatedUserDTO
 import com.k41s.scrollspree.data.remote.dto.LoginDTO
+import com.k41s.scrollspree.util.API_URL
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.call.body
@@ -24,8 +25,6 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
-
-const val API_URL = "https://conformal-eula-nonapostolically.ngrok-free.dev"
 
 fun HttpClientConfig<*>.configureSharedClient(tokenManager: TokenManager) {
     install(ContentNegotiation) {
@@ -79,7 +78,7 @@ private suspend fun refreshTokens(tokenManager: TokenManager): BearerTokens? {
         }
 
         try {
-            val response = refreshClient.post("$API_URL/api/auth/login") {
+            val response = refreshClient.post("${API_URL}/api/auth/login") {
                 contentType(ContentType.Application.Json)
                 setBody(LoginDTO(username, password))
             }

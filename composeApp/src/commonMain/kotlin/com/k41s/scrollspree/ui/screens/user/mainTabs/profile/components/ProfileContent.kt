@@ -19,7 +19,8 @@ import com.k41s.scrollspree.ui.screens.user.mainTabs.profile.UserProfileUiState
 fun ProfileContent(
     state: UserProfileUiState,
     onEditClick: () -> Unit,
-    onPasswordClick: () -> Unit
+    onPasswordClick: () -> Unit,
+    onMyOrdersClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -109,6 +110,23 @@ fun ProfileContent(
             )
             Spacer(Modifier.width(8.dp))
             Text("Change Password")
+        }
+
+        OutlinedButton(
+            onClick = onMyOrdersClick,
+            modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = ButtonDefaults.outlinedButtonColors(
+                contentColor = MaterialTheme.colorScheme.primary
+            )
+        ) {
+            Icon(
+                Icons.Default.ShoppingBag,
+                contentDescription = null,
+                modifier = Modifier.size(18.dp)
+            )
+            Spacer(Modifier.width(8.dp))
+            Text("My Orders")
         }
     }
 }

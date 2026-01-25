@@ -10,4 +10,6 @@ sealed class UserRoute {
     data class ProductDetail(val productId: Int) : UserRoute()
     @Serializable
     data class PlaceOrder(val productId: Int) : UserRoute()
+    @Serializable
+    data object MyOrders : UserRoute()
 }

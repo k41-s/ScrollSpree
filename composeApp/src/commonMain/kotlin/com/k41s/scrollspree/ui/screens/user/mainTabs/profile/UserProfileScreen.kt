@@ -1,6 +1,7 @@
 package com.k41s.scrollspree.ui.screens.user.mainTabs.profile
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -20,7 +21,9 @@ import com.k41s.scrollspree.ui.screens.user.mainTabs.profile.components.ProfileC
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun UserProfileScreen() {
+fun UserProfileScreen(
+    onNavigateToMyOrders: () -> Unit
+) {
     val viewModel: UserProfileViewModel = koinViewModel()
     val state by viewModel.state.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -32,8 +35,9 @@ fun UserProfileScreen() {
     }
 
     Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) }
-    ) { padding ->
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+        ) { padding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -48,7 +52,8 @@ fun UserProfileScreen() {
                     ProfileContent(
                         state = state,
                         onEditClick = { viewModel.toggleEditDialog(true) },
-                        onPasswordClick = { viewModel.togglePasswordDialog(true) }
+                        onPasswordClick = { viewModel.togglePasswordDialog(true) },
+                        onMyOrdersClick = onNavigateToMyOrders
                     )
                 }
             }
