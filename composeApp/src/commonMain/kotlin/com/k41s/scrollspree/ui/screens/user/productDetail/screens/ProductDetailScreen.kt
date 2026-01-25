@@ -25,6 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.k41s.scrollspree.domain.model.Product
 import com.k41s.scrollspree.ui.components.ProductImageGallery
+import com.k41s.scrollspree.util.toCurrencyDisplay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -68,7 +69,7 @@ fun ProductDetailScreen(
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Text(
-                        text = "$${product.price}",
+                        text = product.price.toCurrencyDisplay(),
                         style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.SemiBold

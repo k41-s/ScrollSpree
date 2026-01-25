@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import coil3.ImageLoader
 import coil3.compose.AsyncImage
 import com.k41s.scrollspree.domain.model.enums.PaymentMethod
+import com.k41s.scrollspree.util.toCurrencyDisplay
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -79,7 +80,7 @@ fun PlaceOrderScreen(
                                 color = MaterialTheme.colorScheme.onPrimary
                             )
                         } else {
-                            Text("Confirm Order - $${product.price}")
+                            Text("Confirm Order - ${product.price.toCurrencyDisplay()}")
                         }
                     }
                 }
@@ -125,7 +126,7 @@ fun PlaceOrderScreen(
                                 fontWeight = FontWeight.Bold
                             )
                             Text(
-                                text = "$${product.price}",
+                                text = product.price.toCurrencyDisplay(),
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = MaterialTheme.colorScheme.primary
                             )

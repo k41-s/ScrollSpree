@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import coil3.ImageLoader
 import coil3.compose.AsyncImage
 import com.k41s.scrollspree.domain.model.Product
+import com.k41s.scrollspree.util.toCurrencyDisplay
 import org.koin.compose.koinInject
 
 @Composable
@@ -71,7 +72,7 @@ fun UserProductCard(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "$${product.price}",
+                text = product.price.toCurrencyDisplay(),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold
