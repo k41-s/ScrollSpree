@@ -78,9 +78,7 @@ fun MyOrdersScreen(
                     } else {
                         LazyColumn(modifier = Modifier.fillMaxSize()) {
                             items(currentState.orders) { order ->
-                                OrderCard(order, imageLoader) {
-                                    onNavigateToProduct
-                                }
+                                OrderCard(order, imageLoader, onNavigateToProduct)
                             }
                         }
                     }
