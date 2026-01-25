@@ -11,7 +11,7 @@ fun OrderDTO.toDomain(): Order =
             id = this.productId ?: -1,
             name = this.productName,
             isDeleted = this.isProductDeleted,
-            mainImageId = this.mainImageId
+            mainImageId = this.mainImgId
         ),
         userId = this.userId ?: -1,
         userName = this.userName,

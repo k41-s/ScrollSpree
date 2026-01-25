@@ -6,7 +6,8 @@ sealed class UserRoute {
 
     @Serializable
     data object MainTabs : UserRoute()
-
     @Serializable
     data class ProductDetail(val productId: Int) : UserRoute()
+    @Serializable
+    data class PlaceOrder(val productId: Int) : UserRoute()
 }
