@@ -1,4 +1,4 @@
-package com.k41s.scrollspree.ui.components
+package com.k41s.scrollspree.ui.screens.user.mainTabs.home.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
