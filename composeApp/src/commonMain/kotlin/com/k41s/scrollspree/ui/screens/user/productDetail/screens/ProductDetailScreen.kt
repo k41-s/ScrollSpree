@@ -111,7 +111,10 @@ fun ProductDetailScreen(
                     Spacer(modifier = Modifier.height(20.dp))
 
                     IconButton(
-                        onClick = { shareManager.shareProduct(product.name, product.price) }
+                        onClick = { shareManager.shareProduct(
+                            product.name,
+                            product.price.toCurrencyDisplay()
+                        ) }
                     ) {
                         Icon(Icons.Default.Share, contentDescription = "Share")
                     }

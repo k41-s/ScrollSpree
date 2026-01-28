@@ -9,12 +9,12 @@ import org.koin.core.component.inject
 actual class ShareManager : KoinComponent {
     private val context: Context by inject()
 
-    actual fun shareProduct(name: String, price: Double) {
+    actual fun shareProduct(name: String, price: String) {
         val sendIntent = Intent().apply {
             action = Intent.ACTION_SEND
             putExtra(
                 Intent.EXTRA_TEXT,
-                "Check out $name for only $$price on ScrollSpree!"
+                "Check out $name for only $price on ScrollSpree!"
             )
             type = "text/plain"
         }

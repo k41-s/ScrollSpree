@@ -39,15 +39,17 @@ fun HttpClientConfig<*>.configureSharedClient(tokenManager: TokenManager) {
         url(API_URL)
         header(HttpHeaders.ContentType, ContentType.Application.Json)
         header("ngrok-skip-browser-warning", "true")
-
-        val currentToken = runBlocking { tokenManager.token.value }
-        if (!currentToken.isNullOrBlank()) {
-            header(HttpHeaders.Authorization, "Bearer $currentToken")
-        }
     }
 
     install(Auth) {
         bearer {
+            loadTokens {
+                val currentToken = tokenManager.token.value
+                if (!currentToken.isNullOrBlank()) {
+                    BearerTokens(accessToken = currentToken, refreshToken = "")
+                } else null
+            }
+
             refreshTokens {
                 refreshTokens(tokenManager)
             }
