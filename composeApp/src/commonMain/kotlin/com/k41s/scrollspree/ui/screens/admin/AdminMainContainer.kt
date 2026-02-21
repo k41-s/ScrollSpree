@@ -21,10 +21,10 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import com.k41s.scrollspree.ui.components.FeatureComingSoonScreen
 import com.k41s.scrollspree.ui.screens.admin.category.AdminCategoryContainer
 import com.k41s.scrollspree.ui.screens.admin.country.AdminCountryContainer
 import com.k41s.scrollspree.ui.screens.admin.product.main.AdminProductContainer
+import com.k41s.scrollspree.ui.screens.admin.userOrder.main.AdminUsersContainer
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -99,7 +99,7 @@ fun AdminMainContainer(
                 0 -> AdminCategoryContainer()
                 1 -> AdminCountryContainer()
                 2 -> AdminProductContainer()
-                3 -> FeatureComingSoonScreen("Users & Orders")
+                3 -> AdminUsersContainer()
             }
         }
     }

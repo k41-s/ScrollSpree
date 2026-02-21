@@ -15,7 +15,7 @@ class UserNavigationActions(
         navController.navigate(UserRoute.MyOrders)
     }
 
-    // Future navigate methods go here
+    // Future user navigation methods go here
 
     val goBack: () -> Unit = {
         navController.popBackStack()
