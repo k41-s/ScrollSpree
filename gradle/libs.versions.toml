@@ -23,6 +23,7 @@ datastore = "1.2.0"
 koin = "4.1.1"
 mediaCompose = "0.11.1"
 navigationComposeVersion = "2.9.1"
+navigationeventCompose = "1.0.1"
 permissionsCompose = "0.16.0"
 
 [libraries]
@@ -54,6 +55,7 @@ media = { module = "dev.icerock.moko:media", version.ref = "mediaCompose" }
 media-compose = { module = "dev.icerock.moko:media-compose", version.ref = "mediaCompose" }
 navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigationComposeVersion" }
 ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor_version" }
+navigationevent-compose = { module = "org.jetbrains.androidx.navigationevent:navigationevent-compose", version.ref = "navigationeventCompose" }
 permissions-compose = { module = "dev.icerock.moko:permissions-compose", version.ref = "permissionsCompose" }
 
 [plugins]

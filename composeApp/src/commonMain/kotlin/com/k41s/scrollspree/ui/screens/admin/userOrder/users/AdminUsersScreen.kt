@@ -1,4 +1,4 @@
-package com.k41s.scrollspree.ui.screens.admin.userOrder.main
+package com.k41s.scrollspree.ui.screens.admin.userOrder.users
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,7 +21,7 @@ import com.k41s.scrollspree.ui.screens.admin.userOrder.components.AdminUserCard
 @Composable
 fun AdminUsersScreen(
     users: List<User>,
-    onUserClicked: (Int) -> Unit
+    onUserClicked: (User) -> Unit
 ) {
     Scaffold(
         contentWindowInsets = WindowInsets(0, 0, 0, 0)
@@ -35,7 +35,7 @@ fun AdminUsersScreen(
             }
         }
         else {
-            // search bar and ordering goes here
+            // search bar and sorting goes here
 
             LazyColumn(
                 modifier = Modifier
@@ -44,10 +44,9 @@ fun AdminUsersScreen(
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                val validUsers = users.filter { it.id != null }
-                items(validUsers) { user ->
+                items(users) { user ->
                     AdminUserCard(user) {
-                        onUserClicked(user.id!!)
+                        onUserClicked(user)
                     }
                 }
             }

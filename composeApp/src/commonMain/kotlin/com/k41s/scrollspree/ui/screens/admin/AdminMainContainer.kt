@@ -24,7 +24,7 @@ import androidx.compose.ui.Modifier
 import com.k41s.scrollspree.ui.screens.admin.category.AdminCategoryContainer
 import com.k41s.scrollspree.ui.screens.admin.country.AdminCountryContainer
 import com.k41s.scrollspree.ui.screens.admin.product.main.AdminProductContainer
-import com.k41s.scrollspree.ui.screens.admin.userOrder.main.AdminUsersContainer
+import com.k41s.scrollspree.ui.screens.admin.userOrder.users.AdminUsersContainer
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)

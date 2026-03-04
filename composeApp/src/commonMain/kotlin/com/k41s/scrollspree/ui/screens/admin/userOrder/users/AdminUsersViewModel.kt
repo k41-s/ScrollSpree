@@ -1,9 +1,8 @@
-package com.k41s.scrollspree.ui.screens.admin.userOrder.main
+package com.k41s.scrollspree.ui.screens.admin.userOrder.users
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.k41s.scrollspree.data.repository.UserRepository
-import com.k41s.scrollspree.domain.model.User
 import com.k41s.scrollspree.util.NetworkResult
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

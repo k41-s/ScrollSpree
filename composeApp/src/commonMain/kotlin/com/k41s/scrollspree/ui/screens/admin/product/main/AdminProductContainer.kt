@@ -57,6 +57,11 @@ fun AdminProductContainer() {
         }
     }
 
+    LaunchedEffect(Unit) {
+        viewModel.refreshCountries()
+        viewModel.refreshCategories()
+    }
+
     val actions = remember(viewModel) {
         AdminProductActions(
             onSearchChange = viewModel::onSearchChange,

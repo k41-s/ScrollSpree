@@ -5,12 +5,16 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import com.k41s.scrollspree.data.local.DATA_STORE_FILE_NAME
 import com.k41s.scrollspree.data.local.createDataStore
+import com.k41s.scrollspree.util.NetworkMonitor
 import org.koin.dsl.module
 import org.koin.android.ext.koin.androidContext
 
 actual val platformModule = module {
     single {
         createDataStore(androidContext())
+    }
+    single {
+        NetworkMonitor(androidContext())
     }
 }
 

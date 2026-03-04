@@ -1,4 +1,4 @@
-package com.k41s.scrollspree.ui.screens.admin.userOrder.main
+package com.k41s.scrollspree.ui.screens.admin.userOrder.users
 
 import com.k41s.scrollspree.domain.model.User
 

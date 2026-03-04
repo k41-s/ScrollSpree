@@ -10,7 +10,8 @@ import com.k41s.scrollspree.ui.main.MainViewModel
 import com.k41s.scrollspree.ui.screens.admin.category.AdminCategoryViewModel
 import com.k41s.scrollspree.ui.screens.admin.country.AdminCountryViewModel
 import com.k41s.scrollspree.ui.screens.admin.product.main.AdminProductViewModel
-import com.k41s.scrollspree.ui.screens.admin.userOrder.main.AdminUsersViewModel
+import com.k41s.scrollspree.ui.screens.admin.userOrder.users.orders.AdminOrdersViewModel
+import com.k41s.scrollspree.ui.screens.admin.userOrder.users.AdminUsersViewModel
 import com.k41s.scrollspree.ui.screens.auth.login.LoginViewModel
 import com.k41s.scrollspree.ui.screens.auth.register.RegisterViewModel
 import com.k41s.scrollspree.ui.screens.user.UserMainViewModel
@@ -83,6 +84,7 @@ val appModule = module {
     viewModelOf(::AdminCountryViewModel)
     viewModelOf(::AdminProductViewModel)
     viewModelOf(::AdminUsersViewModel)
+    viewModelOf(::AdminOrdersViewModel)
 
     viewModel { parameters ->
         ProductDetailViewModel(

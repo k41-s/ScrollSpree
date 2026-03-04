@@ -60,7 +60,7 @@ fun AdminUserCard(
                 color = MaterialTheme.colorScheme.onSurface
             )
             Text(
-                text = user.phone,
+                text = "Phone: ${user.phone}",
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Medium,
                 color = MaterialTheme.colorScheme.onSurface

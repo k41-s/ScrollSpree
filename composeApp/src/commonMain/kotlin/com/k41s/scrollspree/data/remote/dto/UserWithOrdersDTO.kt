@@ -6,8 +6,10 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class UserWithOrdersDTO(
     val username: String,
+    val email: String,
     val name: String,
     val surname: String,
+    val phone: String,
     val role: Role,
     val orders: List<OrderDTO>
 )

@@ -30,7 +30,7 @@ fun UserWithOrdersDTO.toDomain() = User(
     firstName = name,
     lastName = surname,
     role = role,
-    email = "Not Provided",
-    phone = "Not Provided",
+    email = email,
+    phone = phone,
     orders = orders.map { it.toDomain() }
 )

@@ -19,6 +19,7 @@ import com.k41s.scrollspree.domain.model.Country
 import com.k41s.scrollspree.ui.screens.admin.product.models.ProductFormActions
 import com.k41s.scrollspree.ui.screens.admin.product.models.ProductFormState
 import com.k41s.scrollspree.util.toNumericString
+import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -110,6 +111,29 @@ class AdminProductViewModel(
     fun onCategoryFilter(id: Int?) {
         selectedCategoryId = id
         loadProducts(true)
+    }
+
+    fun refreshCategories() {
+        viewModelScope.launch {
+            val categoryDeferred = async { categoryRepository.getAll() }
+
+            val categoryResult = categoryDeferred.await()
+
+            if (categoryResult is NetworkResult.Success) {
+                allCategories = categoryResult.data
+            }
+        }
+    }
+    fun refreshCountries() {
+        viewModelScope.launch {
+            val countryDeferred = async { countryRepository.getAll() }
+
+            val countryResult = countryDeferred.await()
+
+            if (countryResult is NetworkResult.Success) {
+                allCountries = countryResult.data
+            }
+        }
     }
 
     fun openAddDialog() {

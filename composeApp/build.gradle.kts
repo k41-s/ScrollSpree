@@ -60,6 +60,7 @@ kotlin {
             implementation(libs.media.compose)
             implementation(libs.permissions.compose)
             implementation(libs.media)
+            implementation(libs.navigationevent.compose)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
