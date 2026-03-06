@@ -13,7 +13,7 @@ import androidx.navigationevent.compose.rememberNavigationEventState
 import com.k41s.scrollspree.domain.model.User
 import com.k41s.scrollspree.ui.components.BasicLoadingScreen
 import com.k41s.scrollspree.ui.components.ErrorScreen
-import com.k41s.scrollspree.ui.screens.admin.userOrder.users.orders.AdminOrdersScreen
+import com.k41s.scrollspree.ui.screens.admin.userOrder.users.orders.AdminOrderContainer
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -38,8 +38,8 @@ fun AdminUsersContainer() {
         }
         is AdminUsersUiState.Success -> {
             Crossfade(targetState = selectedUser) { user ->
-                if (user !=  null) {
-                    AdminOrdersScreen(user) {
+                if (user != null) {
+                    AdminOrderContainer(user) {
                         selectedUser = null
                     }
                 }
