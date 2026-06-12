@@ -32,7 +32,7 @@ fun OrderCard(
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .clip(RoundedCornerShape(12.dp))
-            .clickable { onClick(order.product.id) },
+            .clickable { onClick(order.items.firstOrNull()?.productId ?: -1) }, // to compile
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
@@ -45,8 +45,8 @@ fun OrderCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(
-                model = "${ApiConfig.IMAGE_ENDPOINT}/${order.product.mainImageId}",
-                contentDescription = order.product.name,
+                model = "${ApiConfig.IMAGE_ENDPOINT}/${order.items.firstOrNull()?.mainImageId}",
+                contentDescription = order.items.firstOrNull()?.productName,
                 imageLoader = imageLoader,
                 modifier = Modifier
                     .size(70.dp)
@@ -60,7 +60,7 @@ fun OrderCard(
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = order.product.name,
+                    text = order.items.firstOrNull()?.productName!!,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     maxLines = 1,

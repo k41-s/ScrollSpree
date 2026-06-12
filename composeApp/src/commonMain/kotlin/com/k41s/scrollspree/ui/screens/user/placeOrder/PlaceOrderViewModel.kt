@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.k41s.scrollspree.data.local.TokenManager
 import com.k41s.scrollspree.data.remote.dto.OrderDTO
+import com.k41s.scrollspree.data.remote.dto.OrderItemDTO
 import com.k41s.scrollspree.data.repository.OrderRepository
 import com.k41s.scrollspree.data.repository.ProductRepository
 import com.k41s.scrollspree.data.repository.UserRepository
@@ -96,15 +97,21 @@ class PlaceOrderViewModel(
     }
 
     private fun constructOrderDto(user: User, product: Product): OrderDTO {
-        return OrderDTO(
+        val orderItem = OrderItemDTO(
             productId = product.id,
             productName = product.name,
+            price = product.price,
+            quantity = 1, // Defaulting to 1 for now
+            mainImgId = product.images.firstOrNull()?.id,
+            isProductDeleted = false
+        )
+
+        return OrderDTO(
             userId = user.id,
             userName = user.username,
             paymentMethod = _uiState.value.selectedPaymentMethod,
             notes = _uiState.value.notes,
-            mainImgId = product.images.firstOrNull()?.id,
-            orderedAt = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+            items = listOf(orderItem)
         )
     }
 

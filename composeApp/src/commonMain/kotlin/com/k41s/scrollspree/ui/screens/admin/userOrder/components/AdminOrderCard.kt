@@ -48,8 +48,8 @@ fun AdminOrderCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             ProductThumbnail(
-                mainImgId = order.product.mainImageId,
-                contentDescription = order.product.name,
+                mainImgId = order.items.firstOrNull()?.mainImageId,
+                contentDescription = order.items.firstOrNull()?.productName ?: "",
                 modifier = Modifier.size(50.dp)
             )
 
@@ -57,7 +57,7 @@ fun AdminOrderCard(
 
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = order.product.name,
+                    text = order.items.firstOrNull()?.productName ?: "Unknown Product",
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.SemiBold,
                     maxLines = 1,
@@ -84,7 +84,7 @@ fun AdminOrderCard(
                     )
                 }
 
-                if (order.product.isDeleted) {
+                if (order.items.firstOrNull()?.isDeleted!!) {
                     Text(
                         text = "Discontinued",
                         style = MaterialTheme.typography.labelSmall,

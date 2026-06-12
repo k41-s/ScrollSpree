@@ -12,7 +12,7 @@ fun AuthenticatedUserDTO.toDomain() = User(
     lastName = surname ?: "",
     phone = phone ?: "",
     role = role,
-    token = token
+    token = accessToken
 )
 
 fun UserDTO.toDomain() = User(

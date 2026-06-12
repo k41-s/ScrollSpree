@@ -5,7 +5,7 @@ import kotlinx.datetime.LocalDateTime
 
 data class Order(
     val id: Int,
-    val product: OrderProduct,
+    val items: List<OrderItem>,
     val userId: Int,
     val userName: String,
     val orderedAt: LocalDateTime?,

@@ -7,13 +7,10 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class OrderDTO(
     val id: Int? = null,
-    val productId: Int? = null,
-    val productName: String,
-    val isProductDeleted: Boolean = false,
     val userId: Int? = null,
     val userName: String,
     val orderedAt: LocalDateTime? = null,
     val paymentMethod: PaymentMethod,
     val notes: String,
-    val mainImgId: Int? = null
+    val items: List<OrderItemDTO>
 )

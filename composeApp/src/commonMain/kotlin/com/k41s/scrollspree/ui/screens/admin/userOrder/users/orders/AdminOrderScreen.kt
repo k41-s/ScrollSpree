@@ -77,19 +77,19 @@ fun AdminOrderScreen(
         InfoSection(title = "Product") {
             Row(modifier = Modifier.fillMaxWidth()) {
                 ProductThumbnail(
-                    mainImgId = order.product.mainImageId,
-                    contentDescription = order.product.name
+                    mainImgId = order.items.firstOrNull()?.mainImageId,
+                    contentDescription = order.items.firstOrNull()?.productName ?: ""
                 )
 
                 Spacer(modifier = Modifier.width(16.dp))
 
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = order.product.name,
+                        text = order.items.firstOrNull()?.productName ?: "",
                         style = MaterialTheme.typography.titleLarge
                     )
 
-                    if (order.product.isDeleted) {
+                    if (order.items.firstOrNull()?.isDeleted!!) {
                         Badge(
                             containerColor = MaterialTheme.colorScheme.errorContainer,
                             contentColor = MaterialTheme.colorScheme.onErrorContainer,

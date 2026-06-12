@@ -23,7 +23,6 @@ import io.ktor.http.contentType
 import io.ktor.http.encodedPath
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 
 fun HttpClientConfig<*>.configureSharedClient(tokenManager: TokenManager) {
@@ -88,13 +87,13 @@ private suspend fun refreshTokens(tokenManager: TokenManager): BearerTokens? {
             if (response.status == HttpStatusCode.OK) {
                 val authDto = response.body<AuthenticatedUserDTO>()
                 tokenManager.saveAuthData(
-                    authDto.token,
+                    authDto.accessToken,
                     authDto.role,
                     username,
                     authDto.email,
                     password
                 )
-                BearerTokens(accessToken = authDto.token, refreshToken = "")
+                BearerTokens(accessToken = authDto.accessToken, refreshToken = "")
             } else null
         } catch (e: Exception) {
             null
