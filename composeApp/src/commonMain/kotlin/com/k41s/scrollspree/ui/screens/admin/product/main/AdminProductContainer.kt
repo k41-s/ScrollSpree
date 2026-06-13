@@ -32,11 +32,11 @@ fun AdminProductContainer() {
     val mediaFactory = rememberMediaPickerControllerFactory()
     val picker = remember(mediaFactory) { mediaFactory.createMediaPickerController() }
 
-    val permissionFactory = rememberPermissionsControllerFactory()
-    val permissions = remember(permissionFactory) { permissionFactory.createPermissionsController() }
+    //val permissionFactory = rememberPermissionsControllerFactory()
+    //val permissions = remember(permissionFactory) { permissionFactory.createPermissionsController() }
 
     BindMediaPickerEffect(picker)
-    BindEffect(permissions)
+    //BindEffect(permissions)
 
     val scope = rememberCoroutineScope()
 
@@ -94,7 +94,6 @@ fun AdminProductContainer() {
                     categories = viewModel.getCategories(),
                     countries = viewModel.getCountries(),
                     picker = picker,
-                    permissions = permissions,
                     scope = scope
                 )
             }

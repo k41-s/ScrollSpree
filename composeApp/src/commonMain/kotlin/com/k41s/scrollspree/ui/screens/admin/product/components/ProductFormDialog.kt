@@ -19,12 +19,16 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.DialogProperties
 import com.k41s.scrollspree.domain.model.Category
 import com.k41s.scrollspree.domain.model.Country
 import com.k41s.scrollspree.ui.screens.admin.product.models.ProductFormActions
@@ -41,13 +45,19 @@ fun ProductFormDialog(
     categories: List<Category>,
     countries: List<Country>,
     picker: MediaPickerController,
-    permissions: PermissionsController,
     scope: CoroutineScope
 ) {
     val focusManager = LocalFocusManager.current
 
+    val priceFocusRequester = remember { FocusRequester() }
+    val descriptionFocusRequester = remember { FocusRequester() }
+
     AlertDialog(
         onDismissRequest = actions.onDismiss,
+        properties = DialogProperties(
+            dismissOnClickOutside = false,
+            dismissOnBackPress = true
+        ),
         title = { Text(if (state.name.isEmpty()) "New Product" else "Edit Product") },
         text = {
             Column(
@@ -76,7 +86,6 @@ fun ProductFormDialog(
                         scope.launch {
                             try {
                                 actions.onError("")
-                                permissions.providePermission(dev.icerock.moko.permissions.Permission.GALLERY)
                                 val result = picker.pickImage(dev.icerock.moko.media.picker.MediaSource.GALLERY)
                                 actions.onImageSelected(result.toByteArray())
                             } catch (e: Exception) {
@@ -96,7 +105,7 @@ fun ProductFormDialog(
                         imeAction = ImeAction.Next
                     ),
                     keyboardActions = KeyboardActions(
-                        onNext = { focusManager.moveFocus(FocusDirection.Next) }
+                        onNext = { priceFocusRequester.requestFocus() }
                     )
                 )
 
@@ -106,12 +115,13 @@ fun ProductFormDialog(
                     label = { Text("Price") },
                     prefix = { Text("$ ") },
                     singleLine = true,
+                    modifier = Modifier.focusRequester(priceFocusRequester),
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Decimal,
                         imeAction = ImeAction.Next
                     ),
                     keyboardActions = KeyboardActions(
-                        onNext = { focusManager.moveFocus(FocusDirection.Next) }
+                        onNext = { descriptionFocusRequester.requestFocus() }
                     )
                 )
 
@@ -120,11 +130,12 @@ fun ProductFormDialog(
                     onValueChange = actions.onDescriptionChange,
                     label = { Text("Description") },
                     minLines = 3,
+                    modifier = Modifier.focusRequester(descriptionFocusRequester),
                     keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Go
+                        imeAction = ImeAction.Done
                     ),
                     keyboardActions = KeyboardActions(
-                        onGo = {
+                        onDone = {
                             focusManager.clearFocus()
                         }
                     )
