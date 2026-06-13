@@ -105,7 +105,7 @@ fun RegisterScreen(
                 imeAction = ImeAction.Next
             ),
             keyboardActions = KeyboardActions(
-                onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                onNext = { focusManager.moveFocus(FocusDirection.Next) }
             )
         )
 
@@ -125,10 +125,11 @@ fun RegisterScreen(
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
             keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Next
+                imeAction = ImeAction.Next,
+                keyboardType = KeyboardType.Password
             ),
             keyboardActions = KeyboardActions(
-                onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                onNext = { focusManager.moveFocus(FocusDirection.Next) }
             )
         )
 
@@ -148,10 +149,11 @@ fun RegisterScreen(
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
             keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Next
+                imeAction = ImeAction.Next,
+                keyboardType = KeyboardType.Password
             ),
             keyboardActions = KeyboardActions(
-                onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                onNext = { focusManager.moveFocus(FocusDirection.Next) }
             )
         )
 
@@ -173,7 +175,7 @@ fun RegisterScreen(
                 imeAction = ImeAction.Next
             ),
             keyboardActions = KeyboardActions(
-                onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                onNext = { focusManager.moveFocus(FocusDirection.Next) }
             )
         )
 
@@ -195,7 +197,7 @@ fun RegisterScreen(
                 imeAction = ImeAction.Next
             ),
             keyboardActions = KeyboardActions(
-                onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                onNext = { focusManager.moveFocus(FocusDirection.Next) }
             )
         )
 
@@ -217,7 +219,7 @@ fun RegisterScreen(
                 imeAction = ImeAction.Next
             ),
             keyboardActions = KeyboardActions(
-                onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                onNext = { focusManager.moveFocus(FocusDirection.Next) }
             )
         )
 
@@ -286,8 +288,8 @@ fun RegisterScreen(
 
         Spacer(Modifier.height(16.dp))
 
-        Row(
-            verticalAlignment = Alignment.CenterVertically
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text("Already have an account?", color = colorScheme.onBackground)
             TextButton(onClick = onNavigateToLogin) {
