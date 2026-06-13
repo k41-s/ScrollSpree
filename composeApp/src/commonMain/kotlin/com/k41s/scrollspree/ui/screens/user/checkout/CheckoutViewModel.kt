@@ -125,10 +125,34 @@ class CheckoutViewModel(
 
                     when (val orderResult = orderRepository.create(orderDto)) {
                         is NetworkResult.Success -> {
+                            val savedOrder = orderResult.data
+
                             if (isCartCheckout) {
                                 cartManager.clearCart()
                             }
-                            _uiState.update { it.copy(isLoading = false, isOrderPlaced = true) }
+
+                            var redirectUrl: String? = null
+                            if (_uiState.value.selectedPaymentMethod == PaymentMethod.PAYPAL) {
+                                val orderId = savedOrder.id
+                                val amount = _uiState.value.cartTotal
+
+                                val sandboxBusinessEmail = "sb-jf4go51614221@business.example.com"
+
+                                redirectUrl = "https://www.sandbox.paypal.com/cgi-bin/webscr?" +
+                                        "cmd=_xclick" +
+                                        "&business=$sandboxBusinessEmail" +
+                                        "&amount=$amount" +
+                                        "&currency_code=EUR" +
+                                        "&item_name=ScrollSpree_Order_$orderId"
+                            }
+
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    isOrderPlaced = true,
+                                    paypalRedirectUrl = redirectUrl
+                                )
+                            }
                         }
                         is NetworkResult.Error -> {
                             _uiState.update { it.copy(isLoading = false, errorMessage = orderResult.message) }

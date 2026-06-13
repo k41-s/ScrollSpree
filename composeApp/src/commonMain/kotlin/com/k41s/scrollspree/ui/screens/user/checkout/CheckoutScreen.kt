@@ -11,6 +11,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.k41s.scrollspree.domain.model.enums.PaymentMethod
@@ -29,12 +30,23 @@ fun CheckoutScreen(
     val viewModel: CheckoutViewModel = koinViewModel()
     val state by viewModel.uiState.collectAsState()
 
+    val uriHandler = LocalUriHandler.current
+
     LaunchedEffect(productId) {
         viewModel.loadInitialData(productId)
     }
 
     LaunchedEffect(state.isOrderPlaced) {
         if (state.isOrderPlaced) {
+
+            state.paypalRedirectUrl?.let { url ->
+                try {
+                    uriHandler.openUri(url)
+                } catch (e: Exception) {
+                    println("Failed to open browser: ${e.message}")
+                }
+            }
+
             onOrderPlaced()
             viewModel.resetState()
         }
