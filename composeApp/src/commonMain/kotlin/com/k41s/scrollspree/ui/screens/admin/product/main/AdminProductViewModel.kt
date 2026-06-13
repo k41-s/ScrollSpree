@@ -207,10 +207,15 @@ class AdminProductViewModel(
                         if (result.data is Product) result.data.id else result.data as Int
 
                     formState.imageBytes?.let { bytes ->
+                        val mimeType = com.k41s.scrollspree.util.images.detectMimeType(bytes)
+                        val extension = com.k41s.scrollspree.util.images.getExtensionFromMimeType(mimeType)
+
+                        val safeFileName = formState.name.replace(Regex("[^a-zA-Z0-9]"), "_")
+
                         val imageResult = imageRepository.uploadImage(
                             productId = savedProductId,
                             fileBytes = bytes,
-                            fileName = "${formState.name.replace(" ", "_")}.jpg"
+                            fileName = "$safeFileName$extension"
                         )
 
                         if (imageResult is NetworkResult.Error) {

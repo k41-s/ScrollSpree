@@ -20,3 +20,12 @@ fun detectMimeType(bytes: ByteArray): String {
         else -> "image/jpeg"
     }
 }
+
+fun getExtensionFromMimeType(mimeType: String): String {
+    return when (mimeType) {
+        "image/png" -> ".png"
+        "image/gif" -> ".gif"
+        "image/webp" -> ".webp"
+        else -> ".jpg"
+    }
+}
