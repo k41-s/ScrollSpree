@@ -50,6 +50,7 @@ class AuthRepository (
         safeApiCall {
             // We use a clean client to ensure no token is sent
             val cleanClient = HttpClient {
+                expectSuccess = true
                 install(ContentNegotiation) {
                     json(json)
                 }
