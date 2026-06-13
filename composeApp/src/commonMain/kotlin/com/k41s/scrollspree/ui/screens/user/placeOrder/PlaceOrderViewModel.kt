@@ -9,54 +9,60 @@ import com.k41s.scrollspree.data.repository.OrderRepository
 import com.k41s.scrollspree.data.repository.ProductRepository
 import com.k41s.scrollspree.data.repository.UserRepository
 import com.k41s.scrollspree.domain.model.Product
-import com.k41s.scrollspree.domain.model.User
 import com.k41s.scrollspree.domain.model.enums.PaymentMethod
 import com.k41s.scrollspree.util.NetworkResult
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.time.Clock
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 
 class PlaceOrderViewModel(
     private val orderRepository: OrderRepository,
-    private val userRepository: UserRepository,
     private val productRepository: ProductRepository,
+    private val userRepository: UserRepository,
     private val tokenManager: TokenManager
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(PlaceOrderUiState())
     val uiState = _uiState.asStateFlow()
 
-    fun loadProduct(productId: Int) {
+    fun loadInitialProduct(productId: Int) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
 
-            val result = productRepository.getById(productId)
+            when (val result = productRepository.getById(productId)) {
+                is NetworkResult.Success -> {
+                    val product = result.data
+                    _uiState.update { state ->
 
-            _uiState.update {
-                when (result) {
-                    is NetworkResult.Success -> {
-                        it.copy(
-                            product = result.data,
-                            isLoading = false
-                        )
-                    }
-                    is NetworkResult.Error -> {
-                        it.copy(
-                            errorMessage = result.message,
-                            isLoading = false
-                        )
-                    }
-                    is NetworkResult.Loading -> {
-                        it.copy(isLoading = true, errorMessage = null)
+                        val newCart = state.cartItems.toMutableMap()
+                        newCart[product] = 1
+
+                        state.copy(isLoading = false, cartItems = newCart)
                     }
                 }
+                is NetworkResult.Error -> {
+                    _uiState.update { it.copy(isLoading = false, errorMessage = result.message) }
+                }
+                else -> { _uiState.update { it.copy(isLoading = false) } }
             }
+        }
+    }
+
+    fun updateQuantity(product: Product, change: Int) {
+        _uiState.update { state ->
+            val currentQty = state.cartItems[product] ?: 0
+            val newQty = currentQty + change
+
+            val updatedCart = state.cartItems.toMutableMap()
+            if (newQty <= 0) {
+                updatedCart.remove(product)
+            } else {
+                updatedCart[product] = newQty
+            }
+
+            state.copy(cartItems = updatedCart)
         }
     }
 
@@ -68,70 +74,69 @@ class PlaceOrderViewModel(
         _uiState.update { it.copy(selectedPaymentMethod = method) }
     }
 
-    fun submitOrder(productId: Int) {
+    fun placeOrder() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
 
-            val userDeferred = async { getFullProfile() }
+            if (_uiState.value.cartItems.isEmpty()) {
+                _uiState.update { it.copy(isLoading = false, errorMessage = "Your cart is empty.") }
+                return@launch
+            }
 
-            val userResult = userDeferred.await()
+            val email = tokenManager.email.firstOrNull()
+            if (email == null) {
+                _uiState.update { it.copy(
+                    isLoading = false,
+                    errorMessage = "You must be logged in to place an order."
+                )}
+                return@launch
+            }
 
-            val product = _uiState.value.product
-                ?: (productRepository.getById(productId) as? NetworkResult.Success)?.data
+            when (val userResult = userRepository.getByEmail(email)) {
+                is NetworkResult.Success -> {
+                    val user = userResult.data
+                    val orderDto = constructOrderDto(
+                        userId = user.id ?: -1,
+                        username = user.username
+                    )
 
-            if (userResult is NetworkResult.Success && product != null) {
-                val orderDto = constructOrderDto(userResult.data, product)
-
-                processOrderPlacement(orderDto)
-            } else {
-                handleFetchErrors(userResult)
+                    when (val orderResult = orderRepository.create(orderDto)) {
+                        is NetworkResult.Success -> {
+                            _uiState.update { it.copy(isLoading = false, isOrderPlaced = true) }
+                        }
+                        is NetworkResult.Error -> {
+                            _uiState.update { it.copy(isLoading = false, errorMessage = orderResult.message) }
+                        }
+                        else -> _uiState.update { it.copy(isLoading = false) }
+                    }
+                }
+                is NetworkResult.Error -> {
+                    _uiState.update { it.copy(isLoading = false, errorMessage = "Failed to verify user profile: ${userResult.message}") }
+                }
+                else -> _uiState.update { it.copy(isLoading = false) }
             }
         }
     }
 
-    private suspend fun getFullProfile() : NetworkResult<User> {
-        val email = tokenManager.email.first()
-            ?: return NetworkResult.Error("User email not found in session")
-
-        return userRepository.getByEmail(email)
-    }
-
-    private fun constructOrderDto(user: User, product: Product): OrderDTO {
-        val orderItem = OrderItemDTO(
-            productId = product.id,
-            productName = product.name,
-            price = product.price,
-            quantity = 1, // Defaulting to 1 for now
-            mainImgId = product.images.firstOrNull()?.id,
-            isProductDeleted = false
-        )
+    private fun constructOrderDto(userId: Int, username: String): OrderDTO {
+        val itemsDto = _uiState.value.cartItems.map { (product, qty) ->
+            OrderItemDTO(
+                productId = product.id,
+                productName = product.name,
+                price = product.price,
+                quantity = qty,
+                mainImgId = product.images.firstOrNull()?.id,
+                isProductDeleted = false
+            )
+        }
 
         return OrderDTO(
-            userId = user.id,
-            userName = user.username,
+            userId = userId,
+            userName = username,
             paymentMethod = _uiState.value.selectedPaymentMethod,
             notes = _uiState.value.notes,
-            items = listOf(orderItem)
+            items = itemsDto
         )
-    }
-
-    private suspend fun processOrderPlacement(dto: OrderDTO) {
-        val result = orderRepository.create(dto)
-        _uiState.update {
-            when (result) {
-                is NetworkResult.Success -> it.copy(isLoading = false, isOrderPlaced = true)
-                is NetworkResult.Error -> it.copy(isLoading = false, errorMessage = result.message)
-                else -> it
-            }
-        }
-    }
-
-    private fun handleFetchErrors(userRes: NetworkResult<User>) {
-        val message = when {
-            userRes is NetworkResult.Error -> userRes.message
-            else -> "An unknown error occurred while preparing your order."
-        }
-        _uiState.update { it.copy(isLoading = false, errorMessage = message) }
     }
 
     fun resetState() {

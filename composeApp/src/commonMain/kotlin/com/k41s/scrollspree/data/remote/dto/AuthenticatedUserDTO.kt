@@ -5,12 +5,12 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class AuthenticatedUserDTO(
-    val accessToken: String,
+    val token: String,
     val refreshToken: String,
     val username: String,
     val email: String,
     val role: Role,
-    val name: String?,
-    val surname: String?,
-    val phone: String?
+    val name: String? = null,
+    val surname: String? = null,
+    val phone: String? = null
 )

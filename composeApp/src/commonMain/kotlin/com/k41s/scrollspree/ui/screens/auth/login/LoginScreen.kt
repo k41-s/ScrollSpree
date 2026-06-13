@@ -149,8 +149,8 @@ fun LoginScreen(
 
         Spacer(Modifier.height(16.dp))
 
-        Row(
-            verticalAlignment = Alignment.CenterVertically
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text("Don't have an account?", color = colorScheme.onBackground)
             TextButton(onClick = onNavigateToRegister) {

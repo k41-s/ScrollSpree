@@ -2,7 +2,6 @@ package com.k41s.scrollspree.data.remote
 
 import com.k41s.scrollspree.data.local.TokenManager
 import com.k41s.scrollspree.data.remote.dto.AuthenticatedUserDTO
-import com.k41s.scrollspree.data.remote.dto.LoginDTO
 import com.k41s.scrollspree.data.remote.dto.RefreshTokenRequestDTO
 import com.k41s.scrollspree.util.API_URL
 import io.ktor.client.HttpClient
@@ -96,7 +95,7 @@ private suspend fun refreshTokensFlow(tokenManager: TokenManager): BearerTokens?
             val authDto = response.body<AuthenticatedUserDTO>()
 
             tokenManager.saveAuthData(
-                token = authDto.accessToken,
+                token = authDto.token,
                 refreshToken = authDto.refreshToken,
                 role = authDto.role,
                 username = authDto.username,
@@ -104,7 +103,7 @@ private suspend fun refreshTokensFlow(tokenManager: TokenManager): BearerTokens?
             )
 
             BearerTokens(
-                accessToken = authDto.accessToken,
+                accessToken = authDto.token,
                 refreshToken = authDto.refreshToken
             )
         } else {

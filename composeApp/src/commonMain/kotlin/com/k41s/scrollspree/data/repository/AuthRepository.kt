@@ -62,7 +62,7 @@ class AuthRepository (
                 }.body<AuthenticatedUserDTO>()
 
                 tokenManager.saveAuthData(
-                    responseDto.accessToken,
+                    responseDto.token,
                     responseDto.refreshToken,
                     responseDto.role,
                     responseDto.username,
@@ -78,7 +78,7 @@ class AuthRepository (
         safeApiCall {
             val responseDto = apiService.register(request)
             tokenManager.saveAuthData(
-                responseDto.accessToken,
+                responseDto.token,
                 responseDto.refreshToken,
                 responseDto.role,
                 responseDto.username,
