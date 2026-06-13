@@ -25,4 +25,8 @@ class OrderRepository (
             apiService.create(request).toDomain()
         }
 
+    suspend fun getUserOrdersByDateRange(userId: Int, start: String, end: String): NetworkResult<List<Order>> =
+        safeApiCall {
+            apiService.getUserOrdersByDateRange(userId, start, end).map { it.toDomain() }
+        }
 }

@@ -44,7 +44,7 @@ fun AdminUsersContainer() {
                     }
                 }
                 else {
-                    AdminUsersScreen(state.users) {
+                    AdminUsersScreen(state.users, viewModel) {
                         selectedUser = it
                     }
                 }

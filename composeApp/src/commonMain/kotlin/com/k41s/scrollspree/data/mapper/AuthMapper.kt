@@ -26,6 +26,7 @@ fun UserDTO.toDomain() = User(
 )
 
 fun UserWithOrdersDTO.toDomain() = User(
+    id = id,
     username = username,
     firstName = name,
     lastName = surname,

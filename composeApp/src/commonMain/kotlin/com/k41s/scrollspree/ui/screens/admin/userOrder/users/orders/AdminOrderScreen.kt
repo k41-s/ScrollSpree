@@ -8,9 +8,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Badge
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,6 +27,7 @@ import com.k41s.scrollspree.ui.screens.admin.userOrder.users.orders.components.D
 import com.k41s.scrollspree.ui.screens.admin.userOrder.users.orders.components.InfoSection
 import com.k41s.scrollspree.ui.screens.admin.userOrder.users.orders.components.ProductThumbnail
 import com.k41s.scrollspree.util.formatToString
+import com.k41s.scrollspree.util.toCurrencyDisplay
 
 @Composable
 fun AdminOrderScreen(
@@ -46,7 +50,7 @@ fun AdminOrderScreen(
             }
             Text(
                 text = "Order Details #${order.id}",
-                style = MaterialTheme.typography.headlineSmall,
+                style = typography.headlineSmall,
                 fontWeight = FontWeight.Bold
             )
         }
@@ -56,15 +60,15 @@ fun AdminOrderScreen(
                 Icon(
                     Icons.Default.Person,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary
+                    tint = colorScheme.primary
                 )
                 Spacer(modifier = Modifier.width(12.dp))
                 Column {
-                    Text(text = order.userName, style = MaterialTheme.typography.bodyLarge)
+                    Text(text = order.userName, style = typography.bodyLarge)
                     Text(
                         text = "User ID: ${order.userId}",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        style = typography.labelSmall,
+                        color = colorScheme.onSurfaceVariant
                     )
                 }
             }
@@ -74,30 +78,54 @@ fun AdminOrderScreen(
             DetailRow(label = "Payment", value = order.paymentMethod.name)
         }
 
-        InfoSection(title = "Product") {
-            Row(modifier = Modifier.fillMaxWidth()) {
-                ProductThumbnail(
-                    mainImgId = order.items.firstOrNull()?.mainImageId,
-                    contentDescription = order.items.firstOrNull()?.productName ?: ""
-                )
-
-                Spacer(modifier = Modifier.width(16.dp))
-
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = order.items.firstOrNull()?.productName ?: "",
-                        style = MaterialTheme.typography.titleLarge
+        InfoSection(title = "Products") {
+            order.items.forEachIndexed { index, item ->
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    ProductThumbnail(
+                        mainImgId = item.mainImageId,
+                        contentDescription = item.productName
                     )
 
-                    if (order.items.firstOrNull()?.isDeleted!!) {
-                        Badge(
-                            containerColor = MaterialTheme.colorScheme.errorContainer,
-                            contentColor = MaterialTheme.colorScheme.onErrorContainer,
-                            modifier = Modifier.padding(top = 4.dp)
-                        ) {
-                            Text("Product Deleted/Discontinued")
+                    Spacer(modifier = Modifier.width(16.dp))
+
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = item.productName,
+                            style = typography.titleMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+
+                        Spacer(modifier = Modifier.height(4.dp))
+
+                        Text(
+                            text = "Quantity: ${item.quantity}",
+                            style = typography.bodyMedium,
+                            color = colorScheme.onSurfaceVariant
+                        )
+
+                        Text(
+                            text = item.price.toCurrencyDisplay(),
+                            style = typography.bodyMedium,
+                            fontWeight = FontWeight.SemiBold,
+                            color = colorScheme.primary
+                        )
+
+                        if (order.items.firstOrNull()?.isDeleted!!) {
+                            Badge(
+                                containerColor = colorScheme.errorContainer,
+                                contentColor = colorScheme.onErrorContainer,
+                                modifier = Modifier.padding(top = 4.dp)
+                            ) {
+                                Text("Product Deleted/Discontinued")
+                            }
                         }
                     }
+                }
+                if (index < order.items.size - 1) {
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp), thickness = 0.5.dp)
                 }
             }
         }
@@ -105,14 +133,14 @@ fun AdminOrderScreen(
         if (order.notes.isNotBlank()) {
             InfoSection(title = "Notes from Customer") {
                 Surface(
-                    color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                    color = colorScheme.surfaceVariant.copy(alpha = 0.5f),
                     shape = RoundedCornerShape(12.dp),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
                         text = order.notes,
                         modifier = Modifier.padding(16.dp),
-                        style = MaterialTheme.typography.bodyMedium,
+                        style = typography.bodyMedium,
                         fontStyle = FontStyle.Italic
                     )
                 }

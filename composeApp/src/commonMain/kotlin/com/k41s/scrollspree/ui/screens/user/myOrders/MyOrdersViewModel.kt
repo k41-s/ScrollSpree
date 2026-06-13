@@ -57,4 +57,40 @@ class MyOrdersViewModel(
             }
         }
     }
+
+    fun searchOrdersByDateRange(startDate: String, endDate: String) {
+        viewModelScope.launch {
+            _uiState.value = MyOrdersUiState.Loading
+
+            val email = tokenManager.email.first()
+            if (email == null) {
+                _uiState.value = MyOrdersUiState.Error("User session not found.")
+                return@launch
+            }
+
+            val userResult = userRepository.getByEmail(email)
+            if (userResult is NetworkResult.Success) {
+                val userId = userResult.data.id
+
+                if (userId != null) {
+                    val isoStart = "${startDate}T00:00:00"
+                    val isoEnd = "${endDate}T23:59:59"
+
+                    when (val orderResult = orderRepository.getUserOrdersByDateRange(userId, isoStart, isoEnd)) {
+                        is NetworkResult.Success -> {
+                            _uiState.value = MyOrdersUiState.Success(orderResult.data)
+                        }
+                        is NetworkResult.Error -> {
+                            _uiState.value = MyOrdersUiState.Error(orderResult.message)
+                        }
+                        else -> {}
+                    }
+                } else {
+                    _uiState.value = MyOrdersUiState.Error("User ID is missing.")
+                }
+            } else {
+                _uiState.value = MyOrdersUiState.Error("Failed to load user profile")
+            }
+        }
+    }
 }

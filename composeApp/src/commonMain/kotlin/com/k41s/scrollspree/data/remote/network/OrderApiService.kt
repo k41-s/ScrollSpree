@@ -4,6 +4,7 @@ import com.k41s.scrollspree.data.remote.dto.OrderDTO
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
+import io.ktor.client.request.parameter
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 
@@ -22,4 +23,9 @@ class OrderApiService(private val client: HttpClient) {
             setBody(dto)
         }.body()
 
+    suspend fun getUserOrdersByDateRange(id: Int, start: String, end: String): List<OrderDTO> =
+        client.get("$BASE_URL/$id/date-range") {
+            parameter("start", start)
+            parameter("end", end)
+        }.body()
 }

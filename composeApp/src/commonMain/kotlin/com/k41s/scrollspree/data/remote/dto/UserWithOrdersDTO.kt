@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class UserWithOrdersDTO(
+    val id: Int,
     val username: String,
     val email: String,
     val name: String,

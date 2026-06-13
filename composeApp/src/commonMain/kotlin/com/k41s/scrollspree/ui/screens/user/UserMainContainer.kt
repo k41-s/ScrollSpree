@@ -85,7 +85,7 @@ fun UserMainContainer() {
             composable<UserRoute.MyOrders> {
                 MyOrdersScreen(
                     onBack = actions.goBack,
-                    onNavigateToProduct = { productId ->
+                    onOrderClick = { productId ->
                         navController.navigate(UserRoute.ProductDetail(productId))
                     }
                 )

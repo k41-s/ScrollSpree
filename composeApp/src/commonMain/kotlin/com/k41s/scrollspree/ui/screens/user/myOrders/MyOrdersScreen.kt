@@ -1,18 +1,26 @@
 package com.k41s.scrollspree.ui.screens.user.myOrders
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import coil3.ImageLoader
 import com.k41s.scrollspree.ui.components.BasicLoadingScreen
+import com.k41s.scrollspree.ui.components.DateRangeSearch
 import com.k41s.scrollspree.ui.screens.user.myOrders.components.OrderCard
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
@@ -31,55 +40,92 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun MyOrdersScreen(
     onBack: () -> Unit,
-    onNavigateToProduct: (Int) -> Unit
+    onOrderClick: (Int) -> Unit
 ) {
     val viewModel: MyOrdersViewModel = koinViewModel()
     val state by viewModel.uiState.collectAsState()
     val imageLoader = koinInject<ImageLoader>()
 
-    Scaffold(
-        contentWindowInsets = WindowInsets(0, 0, 0, 0),
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = { Text("My Orders") },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(
-                            Icons.AutoMirrored.Filled.ArrowBack,
-                            "Back"
-                        )
-                    }
-                }
+    Column(modifier = Modifier.fillMaxSize().systemBarsPadding()) {
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            IconButton(onClick = onBack) {
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+            }
+            Text(
+                text = "My Purchase History",
+                style = typography.titleLarge,
+                modifier = Modifier
+                    .padding(16.dp)
             )
         }
-    ) { padding ->
-        Box(
-            modifier = Modifier
-                .padding(padding)
-                .fillMaxSize()
-        ) {
-            when (val currentState = state) {
+        HorizontalDivider(thickness = 0.5.dp)
+
+        LazyColumn(modifier = Modifier.fillMaxSize()) {
+
+            item {
+                DateRangeSearch(
+                    onSearch = { start, end ->
+                        viewModel.searchOrdersByDateRange(start, end)
+                    }
+                )
+            }
+
+            when (val state = state) {
                 is MyOrdersUiState.Loading -> {
-                    BasicLoadingScreen()
+                    item {
+                        Box(modifier = Modifier.fillMaxWidth().padding(32.dp), contentAlignment = Alignment.Center) {
+                            CircularProgressIndicator()
+                        }
+                    }
                 }
                 is MyOrdersUiState.Error -> {
-                    Text(
-                        text = currentState.message,
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.align(Alignment.Center).padding(16.dp)
-                    )
+                    item {
+                        val errorMsg = state.message
+                        if (errorMsg.contains("404") ||
+                            errorMsg.contains("No orders", ignoreCase = true)
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(32.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    "No orders found for this time period.",
+                                    color = colorScheme.onSurfaceVariant
+                                )
+                            }
+                        } else {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(32.dp)
+                                , contentAlignment = Alignment.Center
+                            ) {
+                                Text(errorMsg, color = colorScheme.error)
+                            }
+                        }
+                    }
                 }
                 is MyOrdersUiState.Success -> {
-                    if (currentState.orders.isEmpty()) {
-                        Text(
-                            "No orders yet!",
-                            modifier = Modifier.align(Alignment.Center)
-                        )
-                    } else {
-                        LazyColumn(modifier = Modifier.fillMaxSize()) {
-                            items(currentState.orders) { order ->
-                                OrderCard(order, imageLoader, onNavigateToProduct)
+                    val orders = state.orders
+                    if (orders.isEmpty()) {
+                        item {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(32.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text("No orders found.", color = colorScheme.onSurfaceVariant)
                             }
+                        }
+                    } else {
+                        items(items = orders, key = { it.id }) { order ->
+                            OrderCard(order = order, imageLoader = imageLoader, onClick = onOrderClick)
                         }
                     }
                 }
