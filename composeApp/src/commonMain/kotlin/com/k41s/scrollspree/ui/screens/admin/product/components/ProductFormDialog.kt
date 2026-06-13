@@ -96,7 +96,7 @@ fun ProductFormDialog(
                         imeAction = ImeAction.Next
                     ),
                     keyboardActions = KeyboardActions(
-                        onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                        onNext = { focusManager.moveFocus(FocusDirection.Next) }
                     )
                 )
 
@@ -111,7 +111,7 @@ fun ProductFormDialog(
                         imeAction = ImeAction.Next
                     ),
                     keyboardActions = KeyboardActions(
-                        onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                        onNext = { focusManager.moveFocus(FocusDirection.Next) }
                     )
                 )
 
@@ -121,10 +121,10 @@ fun ProductFormDialog(
                     label = { Text("Description") },
                     minLines = 3,
                     keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Done
+                        imeAction = ImeAction.Go
                     ),
                     keyboardActions = KeyboardActions(
-                        onDone = {
+                        onGo = {
                             focusManager.clearFocus()
                         }
                     )
