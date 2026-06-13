@@ -32,6 +32,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun MainTabPagerScreen(
     actions: UserNavigationActions,
+    isAuthenticated: Boolean,
+    onNavigateToAuth: () -> Unit,
     onLogout: () -> Unit
 ) {
     val pagerState = rememberPagerState(initialPage = 2, pageCount = {5})
@@ -43,8 +45,10 @@ fun MainTabPagerScreen(
             TopAppBar(
                 title = { Text("ScrollSpree") },
                 actions = {
-                    Button(onClick = onLogout) {
-                        Text("Logout")
+                    if (isAuthenticated) {
+                        Button(onClick = onLogout) {
+                            Text("Logout")
+                        }
                     }
                 }
             )
@@ -92,7 +96,10 @@ fun MainTabPagerScreen(
                     actions.navigateToDetail(productId)
                 }
                 3 -> FeatureComingSoonScreen("Favorites")
-                4 -> UserProfileScreen(actions.navigateToMyOrders)
+                4 -> UserProfileScreen(
+                    onNavigateToMyOrders = { actions.navigateToMyOrders() },
+                    onNavigateToAuth = onNavigateToAuth
+                )
             }
         }
     }

@@ -156,25 +156,11 @@ class UserProfileViewModel(
 
             when (val result = userRepository.updateProfileByEmail(currentUser.email, dto)) {
                 is NetworkResult.Success -> {
-                    val currentPassword = tokenManager.password.first() ?: ""
+                    tokenManager.saveUsername(newUsername)
 
-                    val loginResult = authRepository.login(
-                        LoginDTO(newUsername, currentPassword)
-                    )
-
-                    if (loginResult is NetworkResult.Success) {
-                        _events.send("Profile updated successfully!")
-                        _state.update { it.copy(isEditDialogVisible = false, isLoading = false) }
-
-                        loadProfile()
-                    } else {
-                        _state.update {
-                            it.copy(
-                                isLoading = false,
-                                errorMessage = "Profile updated, but session refresh failed. Please re-login."
-                            )
-                        }
-                    }
+                    _events.send("Profile updated successfully!")
+                    _state.update { it.copy(isEditDialogVisible = false, isLoading = false) }
+                    loadProfile()
                 }
                 is NetworkResult.Error -> {
                     _state.update { it.copy(isLoading = false, errorMessage = result.message) }
@@ -230,8 +216,6 @@ class UserProfileViewModel(
 
             when (val result = userRepository.changePassword(dto)) {
                 is NetworkResult.Success -> {
-                    tokenManager.savePassword(uiState.newPassword)
-
                     _events.send("Password updated successfully!")
                     togglePasswordDialog(false)
                 }

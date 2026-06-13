@@ -3,6 +3,7 @@ package com.k41s.scrollspree.data.remote
 import com.k41s.scrollspree.data.local.TokenManager
 import com.k41s.scrollspree.data.remote.dto.AuthenticatedUserDTO
 import com.k41s.scrollspree.data.remote.dto.LoginDTO
+import com.k41s.scrollspree.data.remote.dto.RefreshTokenRequestDTO
 import com.k41s.scrollspree.util.API_URL
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
@@ -44,13 +45,18 @@ fun HttpClientConfig<*>.configureSharedClient(tokenManager: TokenManager) {
         bearer {
             loadTokens {
                 val currentToken = tokenManager.token.value
+                val currentRefreshToken = tokenManager.refreshToken.first()
+
                 if (!currentToken.isNullOrBlank()) {
-                    BearerTokens(accessToken = currentToken, refreshToken = "")
+                    BearerTokens(
+                        accessToken = currentToken,
+                        refreshToken = currentRefreshToken
+                    )
                 } else null
             }
 
             refreshTokens {
-                refreshTokens(tokenManager)
+                refreshTokensFlow(tokenManager)
             }
 
             sendWithoutRequest { request ->
@@ -69,38 +75,48 @@ fun HttpClientConfig<*>.configureSharedClient(tokenManager: TokenManager) {
     }
 }
 
-private suspend fun refreshTokens(tokenManager: TokenManager): BearerTokens? {
-    val username = tokenManager.username.first()
-    val password = tokenManager.password.first()
+private suspend fun refreshTokensFlow(tokenManager: TokenManager): BearerTokens? {
+    val currentRefreshToken = tokenManager.refreshToken.first()
 
-    return if (username != null && password != null) {
-        val refreshClient = HttpClient {
-            install(ContentNegotiation) { json() }
+    if (currentRefreshToken.isNullOrBlank()) return null
+
+    val refreshClient = HttpClient {
+        install(ContentNegotiation) {
+            json(Json { ignoreUnknownKeys = true })
+        }
+    }
+
+    return try {
+        val response = refreshClient.post("${API_URL}/api/auth/refresh") {
+            contentType(ContentType.Application.Json)
+            setBody(RefreshTokenRequestDTO(currentRefreshToken))
         }
 
-        try {
-            val response = refreshClient.post("${API_URL}/api/auth/login") {
-                contentType(ContentType.Application.Json)
-                setBody(LoginDTO(username, password))
-            }
+        if (response.status == HttpStatusCode.OK) {
+            val authDto = response.body<AuthenticatedUserDTO>()
 
-            if (response.status == HttpStatusCode.OK) {
-                val authDto = response.body<AuthenticatedUserDTO>()
-                tokenManager.saveAuthData(
-                    authDto.accessToken,
-                    authDto.role,
-                    username,
-                    authDto.email,
-                    password
-                )
-                BearerTokens(accessToken = authDto.accessToken, refreshToken = "")
-            } else null
-        } catch (e: Exception) {
+            tokenManager.saveAuthData(
+                token = authDto.accessToken,
+                refreshToken = authDto.refreshToken,
+                role = authDto.role,
+                username = authDto.username,
+                email = authDto.email
+            )
+
+            BearerTokens(
+                accessToken = authDto.accessToken,
+                refreshToken = authDto.refreshToken
+            )
+        } else {
+            tokenManager.clearAuthData()
             null
-        } finally {
-            refreshClient.close()
         }
-    } else null
+    } catch (e: Exception) {
+        println("Token Refresh Error: ${e.message}")
+        null
+    } finally {
+        refreshClient.close()
+    }
 }
 
 expect fun createHttpClient(tokenManager: TokenManager): HttpClient

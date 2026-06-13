@@ -63,10 +63,10 @@ class AuthRepository (
 
                 tokenManager.saveAuthData(
                     responseDto.accessToken,
+                    responseDto.refreshToken,
                     responseDto.role,
                     responseDto.username,
-                    responseDto.email,
-                    request.password
+                    responseDto.email
                 )
                 responseDto.toDomain()
             } finally {
@@ -79,10 +79,10 @@ class AuthRepository (
             val responseDto = apiService.register(request)
             tokenManager.saveAuthData(
                 responseDto.accessToken,
+                responseDto.refreshToken,
                 responseDto.role,
                 responseDto.username,
-                responseDto.email,
-                request.password
+                responseDto.email
             )
             responseDto.toDomain()
         }

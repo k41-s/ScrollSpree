@@ -13,6 +13,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.k41s.scrollspree.ui.navigation.UserNavigationActions
+import com.k41s.scrollspree.ui.screens.auth.AuthContainer
 import com.k41s.scrollspree.ui.screens.user.mainTabs.MainTabPagerScreen
 import com.k41s.scrollspree.ui.screens.user.myOrders.MyOrdersScreen
 import com.k41s.scrollspree.ui.screens.user.placeOrder.PlaceOrderScreen
@@ -28,6 +29,8 @@ fun UserMainContainer() {
         UserNavigationActions(navController)
     }
     val snackbarHostState = remember { SnackbarHostState() }
+
+    val isAuthenticated by viewModel.isAuthenticated.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.snackbarMessage.collect { message ->
@@ -45,9 +48,12 @@ fun UserMainContainer() {
             modifier = Modifier.padding(padding)
         ) {
             composable<UserRoute.MainTabs> {
-                MainTabPagerScreen(actions) {
-                    viewModel.onLogoutClicked()
-                }
+                MainTabPagerScreen(
+                    actions = actions,
+                    isAuthenticated = isAuthenticated,
+                    onNavigateToAuth = { navController.navigate(UserRoute.Auth) },
+                    onLogout = { viewModel.onLogoutClicked() }
+                )
             }
 
             composable<UserRoute.ProductDetail> { backStackEntry ->
@@ -83,6 +89,10 @@ fun UserMainContainer() {
                         navController.navigate(UserRoute.ProductDetail(productId))
                     }
                 )
+            }
+
+            composable<UserRoute.Auth> {
+                AuthContainer()
             }
         }
     }

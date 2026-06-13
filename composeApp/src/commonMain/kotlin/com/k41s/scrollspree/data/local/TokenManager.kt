@@ -18,23 +18,23 @@ class TokenManager(
 ) {
 
     companion object {
-        private val TOKEN_KEY = stringPreferencesKey("jwt_token")
+        private val ACCESS_TOKEN_KEY = stringPreferencesKey("jwt_access_token")
+        private val REFRESH_TOKEN_KEY = stringPreferencesKey("jwt_refresh_token")
         private val ROLE_KEY = stringPreferencesKey("user_role")
         private val USERNAME_KEY = stringPreferencesKey("user_name")
         private val EMAIL_KEY = stringPreferencesKey("user_email")
-        private val PASSWORD_KEY = stringPreferencesKey("user_password")
     }
 
     val token: StateFlow<String?> = dataStore.data
-        .map { it[TOKEN_KEY] }
+        .map { it[ACCESS_TOKEN_KEY] }
         .stateIn(
             scope = scope,
             started = SharingStarted.Eagerly,
             initialValue = null
         )
+    val refreshToken: Flow<String?> = dataStore.data.map { it[REFRESH_TOKEN_KEY] }
     val username: Flow<String?> = dataStore.data.map { it[USERNAME_KEY] }
     val email: Flow<String?> = dataStore.data.map { it[EMAIL_KEY] }
-    val password: Flow<String?> = dataStore.data.map { it[PASSWORD_KEY] }
 
     val role: Flow<Role?> = dataStore.data.map { preferences ->
         preferences[ROLE_KEY]?.let {
@@ -44,7 +44,13 @@ class TokenManager(
 
     suspend fun saveToken(token: String) {
         dataStore.edit {
-            it[TOKEN_KEY] = token
+            it[ACCESS_TOKEN_KEY] = token
+        }
+    }
+
+    suspend fun saveRefreshToken(refreshToken: String) {
+        dataStore.edit {
+            it[REFRESH_TOKEN_KEY] = refreshToken
         }
     }
 
@@ -66,25 +72,19 @@ class TokenManager(
         }
     }
 
-    suspend fun savePassword(password: String) {
-        dataStore.edit {
-            it[PASSWORD_KEY] = password
-        }
-    }
-
     suspend fun saveAuthData(
         token: String,
+        refreshToken: String,
         role: Role,
         username: String,
-        email: String,
-        password: String
+        email: String
     ) {
         dataStore.edit { preferences ->
-            preferences[TOKEN_KEY] = token
+            preferences[ACCESS_TOKEN_KEY] = token
+            preferences[REFRESH_TOKEN_KEY] = refreshToken
             preferences[ROLE_KEY] = role.name
             preferences[USERNAME_KEY] = username
             preferences[EMAIL_KEY] = email
-            preferences[PASSWORD_KEY] = password
         }
     }
 
