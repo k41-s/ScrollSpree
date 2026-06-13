@@ -3,6 +3,8 @@ package com.k41s.scrollspree.ui.screens.user.productDetail
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.k41s.scrollspree.data.repository.ProductRepository
+import com.k41s.scrollspree.domain.manager.CartManager
+import com.k41s.scrollspree.domain.model.Product
 import com.k41s.scrollspree.util.NetworkResult
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -10,6 +12,7 @@ import kotlinx.coroutines.launch
 
 class ProductDetailViewModel(
     private val repository: ProductRepository,
+    private val cartManager: CartManager,
     private val productId: Int
 ) : ViewModel() {
 
@@ -36,5 +39,9 @@ class ProductDetailViewModel(
                 }
             }
         }
+    }
+
+    fun addToCart(product: Product) {
+        cartManager.addToCart(product)
     }
 }

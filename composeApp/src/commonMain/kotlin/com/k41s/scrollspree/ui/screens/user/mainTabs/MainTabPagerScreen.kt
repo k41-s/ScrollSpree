@@ -23,6 +23,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import com.k41s.scrollspree.ui.components.FeatureComingSoonScreen
 import com.k41s.scrollspree.ui.navigation.UserNavigationActions
+import com.k41s.scrollspree.ui.screens.user.mainTabs.cart.CartContainer
 import com.k41s.scrollspree.ui.screens.user.mainTabs.home.UserHomeContainer
 import com.k41s.scrollspree.ui.screens.user.mainTabs.profile.UserProfileScreen
 import com.k41s.scrollspree.ui.screens.user.mainTabs.settings.UserSettingsScreen
@@ -91,7 +92,9 @@ fun MainTabPagerScreen(
         ) { page ->
             when (page) {
                 0 -> UserSettingsScreen()
-                1 -> FeatureComingSoonScreen("Cart")
+                1 -> CartContainer {
+                    actions.navigateToCheckout(null)
+                }
                 2 -> UserHomeContainer { productId ->
                     actions.navigateToDetail(productId)
                 }

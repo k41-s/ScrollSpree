@@ -1,4 +1,4 @@
-package com.k41s.scrollspree.ui.screens.user.placeOrder
+package com.k41s.scrollspree.ui.screens.user.checkout
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,6 +8,7 @@ import com.k41s.scrollspree.data.remote.dto.OrderItemDTO
 import com.k41s.scrollspree.data.repository.OrderRepository
 import com.k41s.scrollspree.data.repository.ProductRepository
 import com.k41s.scrollspree.data.repository.UserRepository
+import com.k41s.scrollspree.domain.manager.CartManager
 import com.k41s.scrollspree.domain.model.Product
 import com.k41s.scrollspree.domain.model.enums.PaymentMethod
 import com.k41s.scrollspree.util.NetworkResult
@@ -17,35 +18,57 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class PlaceOrderViewModel(
+class CheckoutViewModel(
     private val orderRepository: OrderRepository,
     private val productRepository: ProductRepository,
     private val userRepository: UserRepository,
-    private val tokenManager: TokenManager
+    private val tokenManager: TokenManager,
+    private val cartManager: CartManager
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(PlaceOrderUiState())
+    private val _uiState = MutableStateFlow(CheckoutUiState())
     val uiState = _uiState.asStateFlow()
 
-    fun loadInitialProduct(productId: Int) {
-        viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, errorMessage = null) }
+    private var isCartCheckout = false
 
-            when (val result = productRepository.getById(productId)) {
-                is NetworkResult.Success -> {
-                    val product = result.data
-                    _uiState.update { state ->
+    fun loadInitialData(productId: Int?) {
+        if (productId != null) {
 
-                        val newCart = state.cartItems.toMutableMap()
-                        newCart[product] = 1
+            isCartCheckout = false
+            viewModelScope.launch {
+                _uiState.update { it.copy(isLoading = true, errorMessage = null) }
 
-                        state.copy(isLoading = false, cartItems = newCart)
+                when (val result = productRepository.getById(productId)) {
+                    is NetworkResult.Success -> {
+                        val product = result.data
+
+                        _uiState.update { state ->
+                            val newCart = state.cartItems.toMutableMap()
+                            newCart[product] = 1
+                            state.copy(isLoading = false, cartItems = newCart)
+                        }
+                    }
+                    is NetworkResult.Error -> {
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                errorMessage = result.message
+                            )
+                        }
+                    }
+                    else -> {
+                        _uiState.update { it.copy(isLoading = false) }
                     }
                 }
-                is NetworkResult.Error -> {
-                    _uiState.update { it.copy(isLoading = false, errorMessage = result.message) }
-                }
-                else -> { _uiState.update { it.copy(isLoading = false) } }
+            }
+        } else {
+            isCartCheckout = true
+            val cartItems = cartManager.cartState.value
+
+            if (cartItems.isEmpty()) {
+                _uiState.update { it.copy(errorMessage = "Your cart is empty.") }
+            } else {
+                _uiState.update { it.copy(cartItems = cartItems) }
             }
         }
     }
@@ -102,6 +125,9 @@ class PlaceOrderViewModel(
 
                     when (val orderResult = orderRepository.create(orderDto)) {
                         is NetworkResult.Success -> {
+                            if (isCartCheckout) {
+                                cartManager.clearCart()
+                            }
                             _uiState.update { it.copy(isLoading = false, isOrderPlaced = true) }
                         }
                         is NetworkResult.Error -> {
@@ -140,6 +166,6 @@ class PlaceOrderViewModel(
     }
 
     fun resetState() {
-        _uiState.value = PlaceOrderUiState()
+        _uiState.value = CheckoutUiState()
     }
 }

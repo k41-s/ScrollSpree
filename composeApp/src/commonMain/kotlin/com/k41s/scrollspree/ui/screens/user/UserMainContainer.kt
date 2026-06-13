@@ -16,7 +16,7 @@ import com.k41s.scrollspree.ui.navigation.UserNavigationActions
 import com.k41s.scrollspree.ui.screens.auth.AuthContainer
 import com.k41s.scrollspree.ui.screens.user.mainTabs.MainTabPagerScreen
 import com.k41s.scrollspree.ui.screens.user.myOrders.MyOrdersScreen
-import com.k41s.scrollspree.ui.screens.user.placeOrder.PlaceOrderScreen
+import com.k41s.scrollspree.ui.screens.user.checkout.CheckoutScreen
 import com.k41s.scrollspree.ui.screens.user.productDetail.ProductDetailContainer
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -70,7 +70,7 @@ fun UserMainContainer() {
             composable<UserRoute.PlaceOrder> { backStackEntry ->
                 val route: UserRoute.PlaceOrder = backStackEntry.toRoute()
 
-                PlaceOrderScreen(
+                CheckoutScreen(
                     route.productId,
                     actions.goBack
                 ) {

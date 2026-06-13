@@ -15,6 +15,10 @@ class UserNavigationActions(
         navController.navigate(UserRoute.MyOrders)
     }
 
+    val navigateToCheckout: (Int?) -> Unit = { productId ->
+        navController.navigate(UserRoute.PlaceOrder(productId))
+    }
+
     // Future user navigation methods go here
 
     val goBack: () -> Unit = {

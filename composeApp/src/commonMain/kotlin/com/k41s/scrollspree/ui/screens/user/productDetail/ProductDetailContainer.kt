@@ -37,11 +37,11 @@ fun ProductDetailContainer(
             }
             is ProductDetailUiState.Success -> {
                 ProductDetailScreen(
-                    state.product,
-                    onBack
-                ) { id ->
-                    onNavigateToCheckout(id)
-                }
+                    product = state.product,
+                    onBack = onBack,
+                    onBuyClicked = { id -> onNavigateToCheckout(id) },
+                    onAddToCartClicked = { product -> viewModel.addToCart(product) }
+                )
             }
         }
     }

@@ -6,6 +6,7 @@ import com.k41s.scrollspree.data.local.TokenManager
 import com.k41s.scrollspree.data.remote.createHttpClient
 import com.k41s.scrollspree.data.remote.network.*
 import com.k41s.scrollspree.data.repository.*
+import com.k41s.scrollspree.domain.manager.CartManager
 import com.k41s.scrollspree.ui.main.MainViewModel
 import com.k41s.scrollspree.ui.screens.admin.category.AdminCategoryViewModel
 import com.k41s.scrollspree.ui.screens.admin.country.AdminCountryViewModel
@@ -14,11 +15,12 @@ import com.k41s.scrollspree.ui.screens.admin.userOrder.users.AdminUsersViewModel
 import com.k41s.scrollspree.ui.screens.auth.login.LoginViewModel
 import com.k41s.scrollspree.ui.screens.auth.register.RegisterViewModel
 import com.k41s.scrollspree.ui.screens.user.UserMainViewModel
+import com.k41s.scrollspree.ui.screens.user.mainTabs.cart.CartViewModel
 import com.k41s.scrollspree.ui.screens.user.mainTabs.home.UserHomeViewModel
 import com.k41s.scrollspree.ui.screens.user.mainTabs.profile.UserProfileViewModel
 import com.k41s.scrollspree.ui.screens.user.mainTabs.settings.UserSettingsViewModel
 import com.k41s.scrollspree.ui.screens.user.myOrders.MyOrdersViewModel
-import com.k41s.scrollspree.ui.screens.user.placeOrder.PlaceOrderViewModel
+import com.k41s.scrollspree.ui.screens.user.checkout.CheckoutViewModel
 import com.k41s.scrollspree.ui.screens.user.productDetail.ProductDetailViewModel
 import com.k41s.scrollspree.util.images.AuthenticatedImageLoader
 import kotlinx.coroutines.CoroutineScope
@@ -44,6 +46,7 @@ val appModule = module {
 
     single { TokenManager(get(), get()) }
     single { SettingsManager(get()) }
+    single { CartManager() }
 
     single { createHttpClient(get()) }
 
@@ -77,15 +80,17 @@ val appModule = module {
     viewModelOf(::UserHomeViewModel)
     viewModelOf(::UserProfileViewModel)
     viewModelOf(::UserSettingsViewModel)
-    viewModelOf(::PlaceOrderViewModel)
+    viewModelOf(::CheckoutViewModel)
     viewModelOf(::MyOrdersViewModel)
     viewModelOf(::AdminCategoryViewModel)
     viewModelOf(::AdminCountryViewModel)
     viewModelOf(::AdminProductViewModel)
     viewModelOf(::AdminUsersViewModel)
+    viewModelOf(::CartViewModel)
 
     viewModel { parameters ->
         ProductDetailViewModel(
+            get(),
             get(),
             parameters.get()
         )

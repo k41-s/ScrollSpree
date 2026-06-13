@@ -1,11 +1,8 @@
-package com.k41s.scrollspree.ui.screens.user.placeOrder
+package com.k41s.scrollspree.ui.screens.user.checkout
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
@@ -14,34 +11,26 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import coil3.ImageLoader
-import coil3.compose.AsyncImage
 import com.k41s.scrollspree.domain.model.enums.PaymentMethod
 import com.k41s.scrollspree.ui.components.BasicLoadingScreen
 import com.k41s.scrollspree.ui.components.ErrorScreen
 import com.k41s.scrollspree.util.toCurrencyDisplay
-import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PlaceOrderScreen(
-    productId: Int,
+fun CheckoutScreen(
+    productId: Int?,
     onBack: () -> Unit,
     onOrderPlaced: () -> Unit
 ) {
-    val viewModel: PlaceOrderViewModel = koinViewModel()
+    val viewModel: CheckoutViewModel = koinViewModel()
     val state by viewModel.uiState.collectAsState()
-    var isExpanded by remember { mutableStateOf(false) }
-
-    val imageLoader = koinInject<ImageLoader>()
 
     LaunchedEffect(productId) {
-        viewModel.loadInitialProduct(productId)
+        viewModel.loadInitialData(productId)
     }
 
     LaunchedEffect(state.isOrderPlaced) {
@@ -67,8 +56,9 @@ fun PlaceOrderScreen(
         Box(modifier = Modifier.fillMaxSize().padding(padding)) {
             when {
                 state.isLoading && state.cartItems.isEmpty() -> BasicLoadingScreen()
+
                 state.errorMessage != null && state.cartItems.isEmpty() -> {
-                    ErrorScreen(state.errorMessage!!) { viewModel.loadInitialProduct(productId) }
+                    ErrorScreen(state.errorMessage!!) { viewModel.loadInitialData(productId) }
                 }
 
                 state.cartItems.isEmpty() -> {
@@ -78,9 +68,11 @@ fun PlaceOrderScreen(
                 }
 
                 else -> {
-                    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-
-                        // Cart Items List
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp)
+                    ) {
                         LazyColumn(
                             modifier = Modifier.weight(1f),
                             verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -100,7 +92,6 @@ fun PlaceOrderScreen(
                                             )
                                         }
 
-                                        // + / - Quantity Controls
                                         Row(verticalAlignment = Alignment.CenterVertically) {
                                             IconButton(onClick = {
                                                 viewModel.updateQuantity(
@@ -156,16 +147,14 @@ fun PlaceOrderScreen(
                             }
                         }
 
-                        // Footer / Total
                         Column(modifier = Modifier.fillMaxWidth().padding(top = 16.dp)) {
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
                                 Text("Total:", style = MaterialTheme.typography.titleLarge)
-                                // Displaying the calculated property from our UiState
                                 Text(
-                                    "$${state.cartTotal}",
+                                    text = state.cartTotal.toCurrencyDisplay(),
                                     style = MaterialTheme.typography.titleLarge,
                                     fontWeight = FontWeight.Bold
                                 )
