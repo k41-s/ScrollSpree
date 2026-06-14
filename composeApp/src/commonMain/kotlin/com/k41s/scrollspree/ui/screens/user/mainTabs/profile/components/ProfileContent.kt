@@ -9,6 +9,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -20,8 +24,11 @@ fun ProfileContent(
     state: UserProfileUiState,
     onEditClick: () -> Unit,
     onPasswordClick: () -> Unit,
-    onMyOrdersClick: () -> Unit
+    onMyOrdersClick: () -> Unit,
+    onDeleteClick: () -> Unit
 ) {
+    var expanded by remember { mutableStateOf(false) }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -29,6 +36,31 @@ fun ProfileContent(
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.End
+        ) {
+            Box {
+                IconButton(onClick = { expanded = true }) {
+                    Icon(Icons.Default.MoreVert, contentDescription = "More options")
+                }
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    DropdownMenuItem(
+                        text = {
+                            Text("Delete Account", color = MaterialTheme.colorScheme.error)
+                        },
+                        onClick = {
+                            expanded = false
+                            onDeleteClick()
+                        }
+                    )
+                }
+            }
+        }
+
         Surface(
             modifier = Modifier.size(100.dp),
             shape = CircleShape,

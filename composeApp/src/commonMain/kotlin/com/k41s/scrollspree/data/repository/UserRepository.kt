@@ -55,4 +55,9 @@ class UserRepository (
             true
         }
 
+    suspend fun deleteMyProfile(): NetworkResult<Boolean> =
+        safeApiCall {
+            apiService.deleteMyProfile()
+            true
+        }
 }

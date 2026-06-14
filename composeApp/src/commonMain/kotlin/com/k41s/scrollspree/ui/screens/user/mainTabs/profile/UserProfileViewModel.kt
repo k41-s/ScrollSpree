@@ -19,7 +19,6 @@ import kotlinx.coroutines.launch
 
 class UserProfileViewModel(
     private val userRepository: UserRepository,
-    private val authRepository: AuthRepository,
     private val tokenManager: TokenManager
 ) : ViewModel() {
     private val _state = MutableStateFlow(UserProfileUiState())
@@ -161,6 +160,27 @@ class UserProfileViewModel(
                     _events.send("Profile updated successfully!")
                     _state.update { it.copy(isEditDialogVisible = false, isLoading = false) }
                     loadProfile()
+                }
+                is NetworkResult.Error -> {
+                    _state.update { it.copy(isLoading = false, errorMessage = result.message) }
+                }
+                else -> _state.update { it.copy(isLoading = false) }
+            }
+        }
+    }
+
+    fun toggleDeleteDialog(show: Boolean) {
+        _state.update { it.copy(isDeleteDialogOpen = show) }
+    }
+
+    fun onDeleteProfileConfirmed() {
+        viewModelScope.launch {
+            _state.update { it.copy(isLoading = true, isDeleteDialogOpen = false, errorMessage = null) }
+
+            when (val result = userRepository.deleteMyProfile()) {
+                is NetworkResult.Success -> {
+                    _events.send("Account deleted successfully.")
+                    tokenManager.clearAuthData()
                 }
                 is NetworkResult.Error -> {
                     _state.update { it.copy(isLoading = false, errorMessage = result.message) }

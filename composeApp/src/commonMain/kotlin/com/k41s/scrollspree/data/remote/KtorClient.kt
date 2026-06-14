@@ -59,7 +59,8 @@ fun HttpClientConfig<*>.configureSharedClient(tokenManager: TokenManager) {
             }
 
             sendWithoutRequest { request ->
-                !request.url.encodedPath.contains("/api/auth/")
+                val hasToken = !tokenManager.token.value.isNullOrBlank()
+                hasToken && !request.url.encodedPath.contains("/api/auth/")
             }
         }
     }

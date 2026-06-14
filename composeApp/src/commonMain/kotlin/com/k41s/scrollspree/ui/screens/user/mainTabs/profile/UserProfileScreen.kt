@@ -8,12 +8,15 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -76,7 +79,8 @@ fun UserProfileScreen(
                         state = state,
                         onEditClick = { viewModel.toggleEditDialog(true) },
                         onPasswordClick = { viewModel.togglePasswordDialog(true) },
-                        onMyOrdersClick = onNavigateToMyOrders
+                        onMyOrdersClick = onNavigateToMyOrders,
+                        onDeleteClick = { viewModel.toggleDeleteDialog(true) }
                     )
                 }
             }
@@ -97,6 +101,31 @@ fun UserProfileScreen(
                     onConfirmChange = viewModel::onConfirmPasswordChanged,
                     onDismiss = { viewModel.togglePasswordDialog(false) },
                     onSave = viewModel::onChangePasswordClicked
+                )
+            }
+
+            if (state.isDeleteDialogOpen) {
+                AlertDialog(
+                    onDismissRequest = { viewModel.toggleDeleteDialog(false) },
+                    title = { Text("Delete Account") },
+                    text = {
+                        Text("Are you sure you want to delete your account? This action cannot be undone and will permanently erase your order history and profile data.")
+                    },
+                    confirmButton = {
+                        Button(
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.error
+                            ),
+                            onClick = viewModel::onDeleteProfileConfirmed
+                        ) {
+                            Text("Delete Permanently")
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = { viewModel.toggleDeleteDialog(false) }) {
+                            Text("Cancel")
+                        }
+                    }
                 )
             }
         }

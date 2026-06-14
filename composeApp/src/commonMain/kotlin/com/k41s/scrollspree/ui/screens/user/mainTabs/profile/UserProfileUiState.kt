@@ -9,6 +9,7 @@ data class UserProfileUiState(
 
     val isEditDialogVisible: Boolean = false,
     val isPasswordDialogVisible: Boolean = false,
+    val isDeleteDialogOpen: Boolean = false,
 
     val editFields: List<ProfileFieldConfig> = emptyList(),
 

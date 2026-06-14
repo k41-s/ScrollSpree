@@ -3,6 +3,7 @@ package com.k41s.scrollspree.data.remote.network
 import com.k41s.scrollspree.data.remote.dto.ChangePasswordDTO
 import com.k41s.scrollspree.data.remote.dto.UserDTO
 import com.k41s.scrollspree.data.remote.dto.UserWithOrdersDTO
+import com.k41s.scrollspree.util.clearAuthCache
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.delete
@@ -11,6 +12,7 @@ import io.ktor.client.request.post
 import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
+import io.ktor.http.isSuccess
 
 private const val BASE_URL = "api/users"
 
@@ -43,7 +45,27 @@ class UserApiService(private val client: HttpClient) {
             setBody(dto)
         }
 
-    suspend fun delete(id: Int): HttpResponse =
-        client.delete("$BASE_URL/$id")
+    suspend fun delete(id: Int): HttpResponse {
+        val response = client.delete("$BASE_URL/$id")
 
+        if (response.status.isSuccess()) {
+            client.clearAuthCache()
+        }
+
+        return response
+    }
+
+    suspend fun deleteMyProfile(): HttpResponse {
+        val response = client.delete("$BASE_URL/profile")
+
+        if (response.status.isSuccess()) {
+            client.clearAuthCache()
+        }
+
+        return response
+    }
+
+    fun flushTokens() {
+        client.clearAuthCache()
+    }
 }
