@@ -1,5 +1,6 @@
 package com.k41s.scrollspree.util
 
+import com.k41s.scrollspree.domain.model.enums.PaymentMethod
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.format.char
 
@@ -32,4 +33,13 @@ fun LocalDateTime.formatToString(): String {
     }
 
     return orderDateFormat.format(this)
+}
+
+fun PaymentMethod.toDisplayName(): String {
+    return when (this) {
+        PaymentMethod.CARD -> "Card"
+        PaymentMethod.PAYPAL -> "PayPal"
+        PaymentMethod.BANK_TRANSFER -> "Bank Transfer"
+        PaymentMethod.CASH -> "Cash"
+    }
 }

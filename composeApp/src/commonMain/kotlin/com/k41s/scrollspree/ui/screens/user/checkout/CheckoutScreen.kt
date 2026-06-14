@@ -8,6 +8,8 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.*
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,6 +20,7 @@ import com.k41s.scrollspree.domain.model.enums.PaymentMethod
 import com.k41s.scrollspree.ui.components.BasicLoadingScreen
 import com.k41s.scrollspree.ui.components.ErrorScreen
 import com.k41s.scrollspree.util.toCurrencyDisplay
+import com.k41s.scrollspree.util.toDisplayName
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -75,7 +78,7 @@ fun CheckoutScreen(
 
                 state.cartItems.isEmpty() -> {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Text("Your cart is empty.", style = MaterialTheme.typography.titleMedium)
+                        Text("Your cart is empty.", style = typography.titleMedium)
                     }
                 }
 
@@ -99,8 +102,8 @@ fun CheckoutScreen(
                                         Column(modifier = Modifier.weight(1f)) {
                                             Text(product.name, fontWeight = FontWeight.Bold)
                                             Text(
-                                                "$${product.price} each",
-                                                color = MaterialTheme.colorScheme.secondary
+                                                "${product.price.toCurrencyDisplay()} each",
+                                                color = colorScheme.secondary
                                             )
                                         }
 
@@ -145,15 +148,42 @@ fun CheckoutScreen(
                                     modifier = Modifier.fillMaxWidth(),
                                     minLines = 3
                                 )
+
                                 Spacer(modifier = Modifier.height(16.dp))
-                                Text("Payment Method", fontWeight = FontWeight.Bold)
-                                PaymentMethod.entries.forEach { method ->
-                                    Row(verticalAlignment = Alignment.CenterVertically) {
-                                        RadioButton(
-                                            selected = state.selectedPaymentMethod == method,
-                                            onClick = { viewModel.onPaymentMethodSelected(method) }
-                                        )
-                                        Text(method.name)
+
+                                var expanded by remember { mutableStateOf(false) }
+
+                                ExposedDropdownMenuBox(
+                                    expanded = expanded,
+                                    onExpandedChange = { expanded = !expanded }
+                                ) {
+                                    OutlinedTextField(
+                                        value = state.selectedPaymentMethod.toDisplayName(),
+                                        onValueChange = {},
+                                        readOnly = true,
+                                        label = { Text("Payment Method") },
+                                        trailingIcon = {
+                                            ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+                                        },
+                                        colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(),
+                                        modifier = Modifier
+                                            .menuAnchor()
+                                            .fillMaxWidth()
+                                    )
+
+                                    ExposedDropdownMenu(
+                                        expanded = expanded,
+                                        onDismissRequest = { expanded = false }
+                                    ) {
+                                        PaymentMethod.entries.forEach { method ->
+                                            DropdownMenuItem(
+                                                text = { Text(method.toDisplayName()) },
+                                                onClick = {
+                                                    viewModel.onPaymentMethodSelected(method)
+                                                    expanded = false
+                                                }
+                                            )
+                                        }
                                     }
                                 }
                             }
