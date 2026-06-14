@@ -2,7 +2,7 @@ package com.k41s.scrollspree.data.repository
 
 import com.k41s.scrollspree.data.local.TokenManager
 import com.k41s.scrollspree.data.mapper.toDomain
-import com.k41s.scrollspree.util.API_URL
+import com.k41s.scrollspree.util.RENDER_API_URL
 import com.k41s.scrollspree.data.remote.dto.AuthenticatedUserDTO
 import com.k41s.scrollspree.data.remote.dto.LoginDTO
 import com.k41s.scrollspree.data.remote.dto.RegisterUserDTO
@@ -56,7 +56,7 @@ class AuthRepository (
                 }
             }
             try {
-                val responseDto = cleanClient.post("$API_URL/api/auth/login") {
+                val responseDto = cleanClient.post("$RENDER_API_URL/api/auth/login") {
                     header(HttpHeaders.ContentType, io.ktor.http.ContentType.Application.Json)
                     setBody(request)
                     header("ngrok-skip-browser-warning", "true")

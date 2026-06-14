@@ -3,7 +3,7 @@ package com.k41s.scrollspree.data.remote
 import com.k41s.scrollspree.data.local.TokenManager
 import com.k41s.scrollspree.data.remote.dto.AuthenticatedUserDTO
 import com.k41s.scrollspree.data.remote.dto.RefreshTokenRequestDTO
-import com.k41s.scrollspree.util.API_URL
+import com.k41s.scrollspree.util.RENDER_API_URL
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.call.body
@@ -35,7 +35,7 @@ fun HttpClientConfig<*>.configureSharedClient(tokenManager: TokenManager) {
     }
 
     install(DefaultRequest) {
-        url(API_URL)
+        url(RENDER_API_URL)
         header(HttpHeaders.ContentType, ContentType.Application.Json)
         header("ngrok-skip-browser-warning", "true")
     }
@@ -87,7 +87,7 @@ private suspend fun refreshTokensFlow(tokenManager: TokenManager): BearerTokens?
     }
 
     return try {
-        val response = refreshClient.post("${API_URL}/api/auth/refresh") {
+        val response = refreshClient.post("${RENDER_API_URL}/api/auth/refresh") {
             contentType(ContentType.Application.Json)
             setBody(RefreshTokenRequestDTO(currentRefreshToken))
         }
