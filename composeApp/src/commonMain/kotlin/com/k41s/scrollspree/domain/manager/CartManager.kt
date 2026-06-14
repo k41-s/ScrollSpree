@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
 class CartManager(
@@ -37,16 +38,20 @@ class CartManager(
         scope.launch {
             authRepository.getCurrentUser().collect { user ->
                 if (user != null) {
+                    syncLocalCartToApi()
                     fetchCart()
-                } else {
-                    clearLocalState()
                 }
             }
         }
     }
 
-    private fun clearLocalState() {
-        _cartState.value = emptyMap()
+    private suspend fun syncLocalCartToApi() {
+        val localItems = _cartState.value
+        if (localItems.isNotEmpty()) {
+            for ((product, quantity) in localItems) {
+                cartRepository.addToCart(product.id, quantity)
+            }
+        }
     }
 
     fun fetchCart() {
@@ -64,11 +69,19 @@ class CartManager(
     fun addToCart(product: Product, quantity: Int = 1) {
         scope.launch {
             _isLoading.value = true
-            when (val result = cartRepository.addToCart(product.id, quantity)) {
+            val user = authRepository.getCurrentUser().firstOrNull()
 
-                is NetworkResult.Success -> _cartState.value = result.data
-                is NetworkResult.Error -> _errorEvent.emit(result.message)
-                is NetworkResult.Loading -> {}
+            if (user != null) {
+                when (val result = cartRepository.addToCart(product.id, quantity)) {
+                    is NetworkResult.Success -> _cartState.value = result.data
+                    is NetworkResult.Error -> _errorEvent.emit(result.message)
+                    is NetworkResult.Loading -> {}
+                }
+            } else {
+                val currentCart = _cartState.value.toMutableMap()
+                val currentQty = currentCart[product] ?: 0
+                currentCart[product] = currentQty + quantity
+                _cartState.value = currentCart
             }
             _isLoading.value = false
         }
@@ -85,10 +98,18 @@ class CartManager(
 
         scope.launch {
             _isLoading.value = true
-            when (val result = cartRepository.updateCartItemQuantity(product.id, newQuantity)) {
-                is NetworkResult.Success -> _cartState.value = result.data
-                is NetworkResult.Error -> _errorEvent.emit(result.message)
-                is NetworkResult.Loading -> {}
+            val user = authRepository.getCurrentUser().firstOrNull()
+
+            if (user != null) {
+                when (val result = cartRepository.updateCartItemQuantity(product.id, newQuantity)) {
+                    is NetworkResult.Success -> _cartState.value = result.data
+                    is NetworkResult.Error -> _errorEvent.emit(result.message)
+                    is NetworkResult.Loading -> {}
+                }
+            } else {
+                val currentCart = _cartState.value.toMutableMap()
+                currentCart[product] = newQuantity
+                _cartState.value = currentCart
             }
             _isLoading.value = false
         }
@@ -97,10 +118,18 @@ class CartManager(
     fun removeFromCart(product: Product) {
         scope.launch {
             _isLoading.value = true
-            when (val result = cartRepository.removeFromCart(product.id)) {
-                is NetworkResult.Success -> _cartState.value = result.data
-                is NetworkResult.Error -> _errorEvent.emit(result.message)
-                is NetworkResult.Loading -> {}
+            val user = authRepository.getCurrentUser().firstOrNull()
+
+            if (user != null) {
+                when (val result = cartRepository.removeFromCart(product.id)) {
+                    is NetworkResult.Success -> _cartState.value = result.data
+                    is NetworkResult.Error -> _errorEvent.emit(result.message)
+                    is NetworkResult.Loading -> {}
+                }
+            } else {
+                val currentCart = _cartState.value.toMutableMap()
+                currentCart.remove(product)
+                _cartState.value = currentCart
             }
             _isLoading.value = false
         }

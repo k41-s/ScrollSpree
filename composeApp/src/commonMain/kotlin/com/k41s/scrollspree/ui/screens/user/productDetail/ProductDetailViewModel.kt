@@ -63,11 +63,6 @@ class ProductDetailViewModel(
 
     fun addToCart(product: Product) {
         viewModelScope.launch {
-            if (!isLoggedIn.value) {
-                _events.emit(ProductDetailEvent.ShowLoginRequired)
-                return@launch
-            }
-
             cartManager.addToCart(product)
             _events.emit(ProductDetailEvent.ItemAddedToCart("${product.name} added to cart!"))
         }

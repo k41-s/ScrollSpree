@@ -37,8 +37,12 @@ class TokenManager(
     val email: Flow<String?> = dataStore.data.map { it[EMAIL_KEY] }
 
     val role: Flow<Role?> = dataStore.data.map { preferences ->
-        preferences[ROLE_KEY]?.let {
-            try { Role.valueOf(it) } catch (e: Exception) { null }
+        preferences[ROLE_KEY]?.let { savedRole ->
+            try {
+                Role.valueOf(savedRole.uppercase())
+            } catch (e: Exception) {
+                null
+            }
         }
     }
 

@@ -72,19 +72,7 @@ fun CartScreen(
             }
         }
     ) { paddingValues ->
-        if (!uiState.isLoggedIn) {
-            Box(
-                modifier = Modifier.fillMaxSize().padding(paddingValues),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    "Log in to place orders and view your cart.",
-                    style = typography.titleMedium,
-                    color = colorScheme.onSurfaceVariant
-                )
-            }
-        }
-        else if (uiState.isEmpty) {
+        if (uiState.isEmpty) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
