@@ -53,7 +53,7 @@ fun AdminUsersScreen(
 
             if (users.isEmpty()) {
                 Box(
-                    modifier = Modifier.fillMaxSize().padding(padding),
+                    modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
                     Text("No users found.", style = MaterialTheme.typography.bodyLarge)
@@ -61,8 +61,7 @@ fun AdminUsersScreen(
             } else {
                 LazyColumn(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(padding),
+                        .fillMaxWidth(),
                     contentPadding = PaddingValues(16.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {

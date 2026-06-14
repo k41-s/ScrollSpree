@@ -33,8 +33,12 @@ class AdminUsersViewModel(
                     _allUsers.value = result.data
                     filterUsers()
                 }
-                is NetworkResult.Error -> AdminUsersUiState.Error(result.message)
-                is NetworkResult.Loading -> AdminUsersUiState.Loading
+                is NetworkResult.Error -> {
+                    _uiState.value = AdminUsersUiState.Error(result.message)
+                }
+                is NetworkResult.Loading -> {
+                    _uiState.value = AdminUsersUiState.Loading
+                }
             }
         }
     }

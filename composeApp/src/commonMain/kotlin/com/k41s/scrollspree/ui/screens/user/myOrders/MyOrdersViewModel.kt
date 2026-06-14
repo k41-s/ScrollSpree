@@ -40,7 +40,8 @@ class MyOrdersViewModel(
                 if (userId != null) {
                     when (val orderResult = orderRepository.getUserOrders(userId)) {
                         is NetworkResult.Success -> {
-                            _uiState.value = MyOrdersUiState.Success(orderResult.data)
+                            val sortedOrders = orderResult.data.sortedByDescending { it.orderedAt }
+                            _uiState.value = MyOrdersUiState.Success(sortedOrders)
                         }
 
                         is NetworkResult.Error -> {
@@ -78,7 +79,8 @@ class MyOrdersViewModel(
 
                     when (val orderResult = orderRepository.getUserOrdersByDateRange(userId, isoStart, isoEnd)) {
                         is NetworkResult.Success -> {
-                            _uiState.value = MyOrdersUiState.Success(orderResult.data)
+                            val sortedOrders = orderResult.data.sortedByDescending { it.orderedAt }
+                            _uiState.value = MyOrdersUiState.Success(sortedOrders)
                         }
                         is NetworkResult.Error -> {
                             _uiState.value = MyOrdersUiState.Error(orderResult.message)

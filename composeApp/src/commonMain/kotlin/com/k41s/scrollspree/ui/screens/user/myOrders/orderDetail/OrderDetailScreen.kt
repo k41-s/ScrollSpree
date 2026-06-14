@@ -8,6 +8,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -70,6 +72,8 @@ fun OrderDetailScreen(
                                 val dateText = order.orderedAt?.formatToString() ?: "N/A"
                                 DetailRow(label = "Placed on", value = dateText)
 
+                                DetailRow(label = "Status", value = order.status ?: "PENDING")
+
                                 DetailRow(label = "Payment", value = order.paymentMethod.toDisplayName())
                                 DetailRow(label = "Total", value = totalAmount.toCurrencyDisplay())
                             }
@@ -79,14 +83,14 @@ fun OrderDetailScreen(
                             item {
                                 InfoSection(title = "Your Notes") {
                                     Surface(
-                                        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                                        color = colorScheme.surfaceVariant.copy(alpha = 0.5f),
                                         shape = RoundedCornerShape(12.dp),
                                         modifier = Modifier.fillMaxWidth()
                                     ) {
                                         Text(
                                             text = order.notes,
                                             modifier = Modifier.padding(16.dp),
-                                            style = MaterialTheme.typography.bodyMedium,
+                                            style = typography.bodyMedium,
                                             fontStyle = FontStyle.Italic
                                         )
                                     }
@@ -97,7 +101,7 @@ fun OrderDetailScreen(
                         item {
                             Text(
                                 text = "Items",
-                                style = MaterialTheme.typography.titleMedium,
+                                style = typography.titleMedium,
                                 modifier = Modifier.padding(top = 8.dp)
                             )
                         }
@@ -122,25 +126,25 @@ fun OrderDetailScreen(
                                     Column(modifier = Modifier.weight(1f)) {
                                         Text(
                                             text = item.productName,
-                                            style = MaterialTheme.typography.titleMedium,
+                                            style = typography.titleMedium,
                                             fontWeight = FontWeight.Bold
                                         )
                                         Spacer(modifier = Modifier.height(4.dp))
                                         Text(
                                             text = "Quantity: ${item.quantity}",
-                                            style = MaterialTheme.typography.bodyMedium,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                            style = typography.bodyMedium,
+                                            color = colorScheme.onSurfaceVariant
                                         )
                                         Text(
                                             text = item.price.toCurrencyDisplay(),
-                                            style = MaterialTheme.typography.bodyMedium,
+                                            style = typography.bodyMedium,
                                             fontWeight = FontWeight.SemiBold,
-                                            color = MaterialTheme.colorScheme.primary
+                                            color = colorScheme.primary
                                         )
                                         if (item.isDeleted) {
                                             Badge(
-                                                containerColor = MaterialTheme.colorScheme.errorContainer,
-                                                contentColor = MaterialTheme.colorScheme.onErrorContainer,
+                                                containerColor = colorScheme.errorContainer,
+                                                contentColor = colorScheme.onErrorContainer,
                                                 modifier = Modifier.padding(top = 4.dp)
                                             ) {
                                                 Text("Product Deleted/Discontinued")
