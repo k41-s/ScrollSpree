@@ -23,13 +23,17 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -39,22 +43,50 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import com.k41s.scrollspree.domain.model.Product
 import com.k41s.scrollspree.ui.components.ProductImageGallery
+import com.k41s.scrollspree.ui.screens.user.productDetail.ProductDetailEvent
 import com.k41s.scrollspree.util.ShareManager
 import com.k41s.scrollspree.util.toCurrencyDisplay
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductDetailScreen(
     product: Product,
+    events: SharedFlow<ProductDetailEvent>,
     onBack: () -> Unit,
-    onBuyClicked: (Int) -> Unit,
-    onAddToCartClicked: (Product) -> Unit
+    onBuyClicked: () -> Unit,
+    onAddToCartClicked: () -> Unit,
+    onNavigateToLogin: () -> Unit
 ) {
     val shareManager = remember { ShareManager() }
 
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) {
+        events.collect { event ->
+            when (event) {
+                is ProductDetailEvent.ShowLoginRequired -> {
+                    val result = snackbarHostState.showSnackbar(
+                        message = "Log in required to perform this action.",
+                        actionLabel = "Log In",
+                        duration = SnackbarDuration.Short
+                    )
+                    if (result == SnackbarResult.ActionPerformed) {
+                        onNavigateToLogin()
+                    }
+                }
+                is ProductDetailEvent.ShowSnackbar -> {
+                    snackbarHostState.showSnackbar(
+                        message = event.message,
+                        duration = SnackbarDuration.Short
+                    )
+                }
+                else -> Unit
+            }
+        }
+    }
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -85,7 +117,7 @@ fun ProductDetailScreen(
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
                         text = product.name,
-                        style = MaterialTheme.typography.headlineMedium,
+                        style = typography.headlineMedium,
                         fontWeight = FontWeight.Bold
                     )
 
@@ -93,8 +125,8 @@ fun ProductDetailScreen(
 
                     Text(
                         text = product.price.toCurrencyDisplay(),
-                        style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.primary,
+                        style = typography.titleLarge,
+                        color = colorScheme.primary,
                         fontWeight = FontWeight.SemiBold
                     )
 
@@ -105,15 +137,7 @@ fun ProductDetailScreen(
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         OutlinedButton(
-                            onClick = {
-                                onAddToCartClicked(product)
-                                scope.launch {
-                                    snackbarHostState.showSnackbar(
-                                        message = "${product.name} added to cart!",
-                                        duration = SnackbarDuration.Short
-                                    )
-                                }
-                            },
+                            onClick = onAddToCartClicked,
                             modifier = Modifier
                                 .weight(1f)
                                 .height(64.dp),
@@ -126,19 +150,19 @@ fun ProductDetailScreen(
                             )
                             Text(
                                 "Add to Cart",
-                                style = MaterialTheme.typography.titleSmall,
+                                style = typography.titleSmall,
                                 textAlign = TextAlign.Center
                             )
                         }
 
                         Button(
-                            onClick = { onBuyClicked(product.id) },
+                            onClick = onBuyClicked,
                             modifier = Modifier
                                 .weight(1f)
                                 .height(64.dp),
                             shape = RoundedCornerShape(12.dp)
                         ) {
-                            Text("Buy Now", style = MaterialTheme.typography.titleMedium)
+                            Text("Buy Now", style = typography.titleMedium)
                         }
                     }
 
@@ -146,7 +170,7 @@ fun ProductDetailScreen(
 
                     Text(
                         text = "Description",
-                        style = MaterialTheme.typography.titleMedium,
+                        style = typography.titleMedium,
                         fontWeight = FontWeight.Bold
                     )
 
@@ -154,8 +178,8 @@ fun ProductDetailScreen(
 
                     Text(
                         text = product.description,
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        style = typography.bodyLarge,
+                        color = colorScheme.onSurfaceVariant
                     )
 
                     Spacer(modifier = Modifier.height(20.dp))

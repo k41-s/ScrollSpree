@@ -62,10 +62,12 @@ fun UserMainContainer() {
 
                 ProductDetailContainer(
                     route.productId,
-                    actions.goBack
-                ) { id ->
-                    navController.navigate(UserRoute.PlaceOrder(id))
-                }
+                    onBack = actions.goBack,
+                    onNavigateToCheckout =  { id ->
+                        navController.navigate(UserRoute.PlaceOrder(id))
+                    },
+                    onNavigateToLogin = { navController.navigate(UserRoute.Auth) }
+                )
             }
 
             composable<UserRoute.PlaceOrder> { backStackEntry ->

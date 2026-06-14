@@ -48,7 +48,7 @@ val appModule = module {
 
     single { TokenManager(get(), get()) }
     single { SettingsManager(get()) }
-    single { CartManager() }
+    single { CartManager(get(), get()) }
 
     single { createHttpClient(get()) }
 
@@ -59,6 +59,7 @@ val appModule = module {
     single { ProductApiService(get()) }
     single { ProductImageApiService(get()) }
     single { UserApiService(get()) }
+    single { CartApiService(get()) }
 
     single { AuthRepository(get(), get(), get()) }
     single { CategoryRepository(get()) }
@@ -67,6 +68,7 @@ val appModule = module {
     single { ProductImageRepository(get()) }
     single { ProductRepository(get()) }
     single { UserRepository(get()) }
+    single { CartRepository(get()) }
 
     single<ImageLoader> {
         AuthenticatedImageLoader(
@@ -94,6 +96,7 @@ val appModule = module {
 
     viewModel { parameters ->
         ProductDetailViewModel(
+            get(),
             get(),
             get(),
             parameters.get()

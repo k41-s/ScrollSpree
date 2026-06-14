@@ -9,6 +9,8 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.*
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,14 +47,14 @@ fun CartScreen(
                 ) {
                     Text(
                         "Total:",
-                        style = MaterialTheme.typography.titleLarge,
+                        style = typography.titleLarge,
                         fontWeight = FontWeight.Bold
                     )
                     Text(
                         uiState.totalAmount.toCurrencyDisplay(),
-                        style = MaterialTheme.typography.titleLarge,
+                        style = typography.titleLarge,
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary
+                        color = colorScheme.primary
                     )
                 }
                 Spacer(modifier = Modifier.height(16.dp))
@@ -64,12 +66,24 @@ fun CartScreen(
                     enabled = !uiState.isEmpty,
                     shape = RoundedCornerShape(12.dp)
                 ) {
-                    Text("Proceed to Checkout", style = MaterialTheme.typography.titleMedium)
+                    Text("Proceed to Checkout", style = typography.titleMedium)
                 }
             }
         }
     ) { paddingValues ->
-        if (uiState.isEmpty) {
+        if (!uiState.isLoggedIn) {
+            Box(
+                modifier = Modifier.fillMaxSize().padding(paddingValues),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    "Log in to place orders and view your cart.",
+                    style = typography.titleMedium,
+                    color = colorScheme.onSurfaceVariant
+                )
+            }
+        }
+        else if (uiState.isEmpty) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -78,8 +92,8 @@ fun CartScreen(
             ) {
                 Text(
                     "Your cart is empty",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    style = typography.titleMedium,
+                    color = colorScheme.onSurfaceVariant
                 )
             }
         } else {

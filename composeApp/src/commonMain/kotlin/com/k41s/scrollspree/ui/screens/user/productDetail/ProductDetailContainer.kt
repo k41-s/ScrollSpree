@@ -3,6 +3,7 @@ package com.k41s.scrollspree.ui.screens.user.productDetail
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -16,7 +17,8 @@ import org.koin.core.parameter.parametersOf
 fun ProductDetailContainer(
     productId: Int,
     onBack: () -> Unit,
-    onNavigateToCheckout: (Int) -> Unit
+    onNavigateToCheckout: (Int) -> Unit,
+    onNavigateToLogin: () -> Unit
 ) {
 
     val viewModel: ProductDetailViewModel = koinViewModel {
@@ -24,6 +26,14 @@ fun ProductDetailContainer(
     }
 
     val uiState by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.events.collect { event ->
+            if (event is ProductDetailEvent.NavigateToCheckout) {
+                onNavigateToCheckout(event.productId)
+            }
+        }
+    }
 
     Box(Modifier.fillMaxSize()) {
         when (val state = uiState) {
@@ -38,9 +48,11 @@ fun ProductDetailContainer(
             is ProductDetailUiState.Success -> {
                 ProductDetailScreen(
                     product = state.product,
+                    events = viewModel.events,
                     onBack = onBack,
-                    onBuyClicked = { id -> onNavigateToCheckout(id) },
-                    onAddToCartClicked = { product -> viewModel.addToCart(product) }
+                    onBuyClicked = { viewModel.onBuyClicked(state.product.id) },
+                    onAddToCartClicked = { viewModel.addToCart(state.product) },
+                    onNavigateToLogin = onNavigateToLogin
                 )
             }
         }
