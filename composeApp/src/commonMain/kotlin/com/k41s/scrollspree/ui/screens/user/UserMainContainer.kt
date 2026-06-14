@@ -96,7 +96,7 @@ fun UserMainContainer() {
                     viewModel.showMessage("Order placed successfully!")
 
                     navController.navigate(UserRoute.MyOrders) {
-                        popUpTo(UserRoute.MainTabs) { inclusive = false }
+                        popUpTo<UserRoute.MainTabs> { inclusive = false }
                     }
                 }
             }
