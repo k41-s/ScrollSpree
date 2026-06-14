@@ -32,6 +32,7 @@ fun CartScreen(
     onCheckoutClicked: () -> Unit
 ) {
     Scaffold(
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             CenterAlignedTopAppBar(title = { Text("My Cart") })
         },

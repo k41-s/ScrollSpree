@@ -1,6 +1,10 @@
 package com.k41s.scrollspree.ui.screens.admin
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -13,6 +17,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -21,6 +26,8 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.sp
 import com.k41s.scrollspree.ui.screens.admin.category.AdminCategoryContainer
 import com.k41s.scrollspree.ui.screens.admin.country.AdminCountryContainer
 import com.k41s.scrollspree.ui.screens.admin.product.main.AdminProductContainer
@@ -35,6 +42,8 @@ fun AdminMainContainer(
 
     val pagerState = rememberPagerState(initialPage = 0, pageCount = {4})
     val scope = rememberCoroutineScope()
+
+    val isKeyboardOpen = WindowInsets.ime.getBottom(LocalDensity.current) > 0
 
     val screenName = when (pagerState.currentPage) {
         0 -> "Categories"
@@ -62,31 +71,43 @@ fun AdminMainContainer(
             )
         },
         bottomBar = {
-            NavigationBar {
-                val tabs = listOf(
-                    Triple(Icons.AutoMirrored.Filled.List, "Categories", 0),
-                    Triple(Icons.Default.Flag, "Countries", 1),
-                    Triple(Icons.Default.Inventory, "Products", 2),
-                    Triple(Icons.Default.Person, "Users", 3)
-                )
-
-                tabs.forEach { (icon, label, index) ->
-                    NavigationBarItem(
-                        selected = pagerState.currentPage == index,
-                        onClick = {
-                            scope.launch {
-                                pagerState.animateScrollToPage(index)
-                            }
-                        },
-                        icon = {
-                            Icon(
-                                imageVector = icon,
-                                contentDescription = label
-                            )
-                        },
-                        label = { Text(label) },
-                        alwaysShowLabel = true
+            AnimatedVisibility(
+                visible = !isKeyboardOpen,
+                enter = slideInVertically(initialOffsetY = { it }),
+                exit = slideOutVertically(targetOffsetY = { it })
+            ) {
+                NavigationBar {
+                    val tabs = listOf(
+                        Triple(Icons.AutoMirrored.Filled.List, "Categories", 0),
+                        Triple(Icons.Default.Flag, "Countries", 1),
+                        Triple(Icons.Default.Inventory, "Products", 2),
+                        Triple(Icons.Default.Person, "Users", 3)
                     )
+
+                    tabs.forEach { (icon, label, index) ->
+                        NavigationBarItem(
+                            selected = pagerState.currentPage == index,
+                            onClick = {
+                                scope.launch {
+                                    pagerState.animateScrollToPage(index)
+                                }
+                            },
+                            icon = {
+                                Icon(
+                                    imageVector = icon,
+                                    contentDescription = label
+                                )
+                            },
+                            label = {
+                                Text(
+                                    label,
+                                    style = typography.bodySmall,
+                                    fontSize = 10.sp
+                                )
+                            },
+                            alwaysShowLabel = true
+                        )
+                    }
                 }
             }
         }

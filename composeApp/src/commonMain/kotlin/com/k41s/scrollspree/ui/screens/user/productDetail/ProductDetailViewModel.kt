@@ -69,7 +69,7 @@ class ProductDetailViewModel(
             }
 
             cartManager.addToCart(product)
-            _events.emit(ProductDetailEvent.ShowSnackbar("${product.name} added to cart!"))
+            _events.emit(ProductDetailEvent.ItemAddedToCart("${product.name} added to cart!"))
         }
     }
 

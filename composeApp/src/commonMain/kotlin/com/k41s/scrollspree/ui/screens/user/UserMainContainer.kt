@@ -3,7 +3,9 @@ package com.k41s.scrollspree.ui.screens.user
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.*
@@ -40,18 +42,27 @@ fun UserMainContainer() {
     }
 
     Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) },
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState) { snackbarData ->
+                Snackbar(
+                    snackbarData = snackbarData,
+                    actionColor = colorScheme.primary
+                )
+            }
+        },
         contentWindowInsets = WindowInsets(0, 0, 0, 0)
     ) { padding ->
         NavHost(
             navController = navController,
-            startDestination = UserRoute.MainTabs,
+            startDestination = UserRoute.MainTabs(),
             modifier = Modifier.padding(padding)
         ) {
-            composable<UserRoute.MainTabs> {
+            composable<UserRoute.MainTabs> { backStackEntry ->
+                val route: UserRoute.MainTabs = backStackEntry.toRoute()
                 MainTabPagerScreen(
                     actions = actions,
                     isAuthenticated = isAuthenticated,
+                    initialTab = route.initialTab,
                     onNavigateToAuth = { navController.navigate(UserRoute.Auth) },
                     onLogout = { viewModel.onLogoutClicked() }
                 )
@@ -66,7 +77,12 @@ fun UserMainContainer() {
                     onNavigateToCheckout =  { id ->
                         navController.navigate(UserRoute.PlaceOrder(id))
                     },
-                    onNavigateToLogin = { navController.navigate(UserRoute.Auth) }
+                    onNavigateToLogin = { navController.navigate(UserRoute.Auth) },
+                    onNavigateToCart = {
+                        navController.navigate(UserRoute.MainTabs(initialTab = 1)) {
+                            popUpTo<UserRoute.MainTabs> { inclusive = true }
+                        }
+                    }
                 )
             }
 

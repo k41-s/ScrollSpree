@@ -1,6 +1,10 @@
 package com.k41s.scrollspree.ui.screens.user.mainTabs
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -21,6 +25,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import com.k41s.scrollspree.ui.components.FeatureComingSoonScreen
 import com.k41s.scrollspree.ui.navigation.UserNavigationActions
 import com.k41s.scrollspree.ui.screens.user.mainTabs.cart.CartContainer
@@ -34,11 +39,15 @@ import kotlinx.coroutines.launch
 fun MainTabPagerScreen(
     actions: UserNavigationActions,
     isAuthenticated: Boolean,
+    initialTab: Int = 2,
     onNavigateToAuth: () -> Unit,
     onLogout: () -> Unit
 ) {
-    val pagerState = rememberPagerState(initialPage = 2, pageCount = {5})
+    val pagerState = rememberPagerState(initialPage = initialTab, pageCount = {5})
     val scope = rememberCoroutineScope()
+
+    val isKeyboardOpen = WindowInsets.ime.getBottom(LocalDensity.current) > 0
+
 
     Scaffold(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
@@ -55,32 +64,38 @@ fun MainTabPagerScreen(
             )
         },
         bottomBar = {
-            NavigationBar {
-                val tabs = listOf(
-                    Icons.Default.Settings to 0,
-                    Icons.Default.ShoppingCart to 1,
-                    Icons.Default.Home to 2,
-                    Icons.Default.Favorite to 3,
-                    Icons.Default.Person to 4
-                )
-
-                tabs.forEach { (icon, index) ->
-                    NavigationBarItem(
-                        selected = pagerState.currentPage == index,
-                        onClick = {
-                            scope.launch {
-                                pagerState.animateScrollToPage(index)
-                            }
-                        },
-                        icon = {
-                            Icon(
-                                imageVector = icon,
-                                contentDescription = null
-                            )
-                        },
-                        label = null,
-                        alwaysShowLabel = false
+            AnimatedVisibility(
+                visible = !isKeyboardOpen,
+                enter = slideInVertically(initialOffsetY = { it }),
+                exit = slideOutVertically(targetOffsetY = { it })
+            ) {
+                NavigationBar {
+                    val tabs = listOf(
+                        Icons.Default.Settings to 0,
+                        Icons.Default.ShoppingCart to 1,
+                        Icons.Default.Home to 2,
+                        Icons.Default.Favorite to 3,
+                        Icons.Default.Person to 4
                     )
+
+                    tabs.forEach { (icon, index) ->
+                        NavigationBarItem(
+                            selected = pagerState.currentPage == index,
+                            onClick = {
+                                scope.launch {
+                                    pagerState.animateScrollToPage(index)
+                                }
+                            },
+                            icon = {
+                                Icon(
+                                    imageVector = icon,
+                                    contentDescription = null
+                                )
+                            },
+                            label = null,
+                            alwaysShowLabel = false
+                        )
+                    }
                 }
             }
         }

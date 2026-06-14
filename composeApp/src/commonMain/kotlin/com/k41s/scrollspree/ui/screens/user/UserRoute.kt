@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 sealed class UserRoute {
 
     @Serializable
-    data object MainTabs : UserRoute()
+    data class MainTabs(val initialTab: Int = 2) : UserRoute()
     @Serializable
     data class ProductDetail(val productId: Int) : UserRoute()
     @Serializable

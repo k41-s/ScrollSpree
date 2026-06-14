@@ -12,7 +12,9 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -42,6 +44,7 @@ fun UserProfileScreen(
 ) {
     val viewModel: UserProfileViewModel = koinViewModel()
     val state by viewModel.state.collectAsStateWithLifecycle()
+
     val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(Unit) {
@@ -51,7 +54,14 @@ fun UserProfileScreen(
     }
 
     Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) },
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState) { snackbarData ->
+                Snackbar(
+                    snackbarData = snackbarData,
+                    actionColor = colorScheme.primary
+                )
+            }
+        },
         contentWindowInsets = WindowInsets(0, 0, 0, 0)
         ) { padding ->
         Box(
@@ -114,7 +124,7 @@ fun UserProfileScreen(
                     confirmButton = {
                         Button(
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.error
+                                containerColor = colorScheme.error
                             ),
                             onClick = viewModel::onDeleteProfileConfirmed
                         ) {

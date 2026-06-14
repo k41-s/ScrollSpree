@@ -8,6 +8,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.k41s.scrollspree.ui.components.ErrorScreen
+import com.k41s.scrollspree.ui.screens.user.UserRoute
 import com.k41s.scrollspree.ui.screens.user.productDetail.screens.ProductDetailLoadingScreen
 import com.k41s.scrollspree.ui.screens.user.productDetail.screens.ProductDetailScreen
 import org.koin.compose.viewmodel.koinViewModel
@@ -18,7 +19,8 @@ fun ProductDetailContainer(
     productId: Int,
     onBack: () -> Unit,
     onNavigateToCheckout: (Int) -> Unit,
-    onNavigateToLogin: () -> Unit
+    onNavigateToLogin: () -> Unit,
+    onNavigateToCart: () -> Unit
 ) {
 
     val viewModel: ProductDetailViewModel = koinViewModel {
@@ -52,7 +54,8 @@ fun ProductDetailContainer(
                     onBack = onBack,
                     onBuyClicked = { viewModel.onBuyClicked(state.product.id) },
                     onAddToCartClicked = { viewModel.addToCart(state.product) },
-                    onNavigateToLogin = onNavigateToLogin
+                    onNavigateToLogin = onNavigateToLogin,
+                    onNavigateToCart = onNavigateToCart
                 )
             }
         }

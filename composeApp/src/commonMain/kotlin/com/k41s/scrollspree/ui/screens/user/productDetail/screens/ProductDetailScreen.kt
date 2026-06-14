@@ -27,6 +27,7 @@ import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -57,12 +58,12 @@ fun ProductDetailScreen(
     onBack: () -> Unit,
     onBuyClicked: () -> Unit,
     onAddToCartClicked: () -> Unit,
-    onNavigateToLogin: () -> Unit
+    onNavigateToLogin: () -> Unit,
+    onNavigateToCart: () -> Unit
 ) {
     val shareManager = remember { ShareManager() }
 
     val snackbarHostState = remember { SnackbarHostState() }
-    val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
         events.collect { event ->
@@ -83,13 +84,30 @@ fun ProductDetailScreen(
                         duration = SnackbarDuration.Short
                     )
                 }
+                is ProductDetailEvent.ItemAddedToCart -> {
+                    val result = snackbarHostState.showSnackbar(
+                        message = event.message,
+                        actionLabel = "View Cart",
+                        duration = SnackbarDuration.Short
+                    )
+                    if (result == SnackbarResult.ActionPerformed) {
+                        onNavigateToCart()
+                    }
+                }
                 else -> Unit
             }
         }
     }
 
     Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) },
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState) { snackbarData ->
+                Snackbar(
+                    snackbarData = snackbarData,
+                    actionColor = colorScheme.primary
+                )
+            }
+        },
         topBar = {
             CenterAlignedTopAppBar(
                 title = { Text(product.name, maxLines = 1) },
