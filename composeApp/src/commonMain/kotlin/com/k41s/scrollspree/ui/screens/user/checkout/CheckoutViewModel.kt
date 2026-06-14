@@ -131,27 +131,29 @@ class CheckoutViewModel(
                                 cartManager.clearCart()
                             }
 
-                            var redirectUrl: String? = null
                             if (_uiState.value.selectedPaymentMethod == PaymentMethod.PAYPAL) {
-                                val orderId = savedOrder.id
-                                val amount = _uiState.value.cartTotal
+                                val redirectUrl = savedOrder.approvalUrl
 
-                                val sandboxBusinessEmail = "sb-jf4go51614221@business.example.com"
-
-                                redirectUrl = "https://www.sandbox.paypal.com/cgi-bin/webscr?" +
-                                        "cmd=_xclick" +
-                                        "&business=$sandboxBusinessEmail" +
-                                        "&amount=$amount" +
-                                        "&currency_code=EUR" +
-                                        "&item_name=ScrollSpree_Order_$orderId"
-                            }
-
-                            _uiState.update {
-                                it.copy(
-                                    isLoading = false,
-                                    isOrderPlaced = true,
-                                    paypalRedirectUrl = redirectUrl
-                                )
+                                if (redirectUrl != null) {
+                                    _uiState.update {
+                                        it.copy(
+                                            isLoading = false,
+                                            isWaitingForPayment = true,
+                                            paypalRedirectUrl = redirectUrl
+                                        )
+                                    }
+                                } else {
+                                    _uiState.update {
+                                        it.copy(isLoading = false, errorMessage = "Failed to get PayPal link from server.")
+                                    }
+                                }
+                            } else {
+                                _uiState.update {
+                                    it.copy(
+                                        isLoading = false,
+                                        isOrderPlaced = true
+                                    )
+                                }
                             }
                         }
                         is NetworkResult.Error -> {

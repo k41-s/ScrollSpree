@@ -41,17 +41,18 @@ fun CheckoutScreen(
 
     LaunchedEffect(state.isOrderPlaced) {
         if (state.isOrderPlaced) {
-
-            state.paypalRedirectUrl?.let { url ->
-                try {
-                    uriHandler.openUri(url)
-                } catch (e: Exception) {
-                    println("Failed to open browser: ${e.message}")
-                }
-            }
-
             onOrderPlaced()
             viewModel.resetState()
+        }
+    }
+
+    LaunchedEffect(state.paypalRedirectUrl) {
+        state.paypalRedirectUrl?.let { url ->
+            try {
+                uriHandler.openUri(url)
+            } catch (e: Exception) {
+                println("Failed to open browser: ${e.message}")
+            }
         }
     }
 
@@ -74,6 +75,39 @@ fun CheckoutScreen(
 
                 state.errorMessage != null && state.cartItems.isEmpty() -> {
                     ErrorScreen(state.errorMessage!!) { viewModel.loadInitialData(productId) }
+                }
+
+                state.isWaitingForPayment -> {
+                    Column(
+                        modifier = Modifier.fillMaxSize().padding(16.dp),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        CircularProgressIndicator()
+                        Spacer(modifier = Modifier.height(24.dp))
+                        Text(
+                            "Waiting for Payment...",
+                            style = typography.titleLarge,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            "Please complete the checkout in your browser. Once finished, click below.",
+                            style = typography.bodyMedium,
+                            color = colorScheme.secondary,
+                            textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                        )
+                        Spacer(modifier = Modifier.height(32.dp))
+                        Button(
+                            onClick = {
+                                onOrderPlaced()
+                                viewModel.resetState()
+                            },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text("I have completed the payment")
+                        }
+                    }
                 }
 
                 state.cartItems.isEmpty() -> {

@@ -12,5 +12,7 @@ data class OrderDTO(
     val orderedAt: LocalDateTime? = null,
     val paymentMethod: PaymentMethod,
     val notes: String,
-    val items: List<OrderItemDTO>
+    val items: List<OrderItemDTO>,
+    val status: String? = null,
+    val approvalUrl: String? = null
 )

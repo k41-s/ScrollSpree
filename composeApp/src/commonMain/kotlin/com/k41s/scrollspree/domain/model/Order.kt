@@ -10,5 +10,7 @@ data class Order(
     val userName: String,
     val orderedAt: LocalDateTime?,
     val paymentMethod: PaymentMethod,
-    val notes: String
+    val notes: String,
+    val status: String? = null,
+    val approvalUrl: String? = null
 )

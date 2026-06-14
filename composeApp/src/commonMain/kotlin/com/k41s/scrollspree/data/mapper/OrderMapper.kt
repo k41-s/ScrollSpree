@@ -23,5 +23,7 @@ fun OrderDTO.toDomain(): Order =
         userName = this.userName,
         orderedAt = this.orderedAt,
         paymentMethod = this.paymentMethod,
-        notes = this.notes
+        notes = this.notes,
+        status = this.status,
+        approvalUrl = this.approvalUrl
     )
