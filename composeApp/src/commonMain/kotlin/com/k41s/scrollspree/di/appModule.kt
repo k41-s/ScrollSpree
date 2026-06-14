@@ -22,6 +22,7 @@ import com.k41s.scrollspree.ui.screens.user.mainTabs.profile.UserProfileViewMode
 import com.k41s.scrollspree.ui.screens.user.mainTabs.settings.UserSettingsViewModel
 import com.k41s.scrollspree.ui.screens.user.myOrders.MyOrdersViewModel
 import com.k41s.scrollspree.ui.screens.user.checkout.CheckoutViewModel
+import com.k41s.scrollspree.ui.screens.user.myOrders.orderDetail.OrderDetailViewModel
 import com.k41s.scrollspree.ui.screens.user.productDetail.ProductDetailViewModel
 import com.k41s.scrollspree.util.images.AuthenticatedImageLoader
 import kotlinx.coroutines.CoroutineScope
@@ -83,6 +84,7 @@ val appModule = module {
     viewModelOf(::UserSettingsViewModel)
     viewModelOf(::CheckoutViewModel)
     viewModelOf(::MyOrdersViewModel)
+    viewModelOf(::OrderDetailViewModel)
     viewModelOf(::AdminCategoryViewModel)
     viewModelOf(::AdminCountryViewModel)
     viewModelOf(::AdminProductViewModel)

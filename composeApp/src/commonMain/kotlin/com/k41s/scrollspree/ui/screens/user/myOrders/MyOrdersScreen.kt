@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import coil3.ImageLoader
 import com.k41s.scrollspree.ui.components.BasicLoadingScreen
 import com.k41s.scrollspree.ui.components.DateRangeSearch
+import com.k41s.scrollspree.ui.components.orders.SharedOrderCard
 import com.k41s.scrollspree.ui.screens.user.myOrders.components.OrderCard
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
@@ -125,7 +126,10 @@ fun MyOrdersScreen(
                         }
                     } else {
                         items(items = orders, key = { it.id }) { order ->
-                            OrderCard(order = order, imageLoader = imageLoader, onClick = onOrderClick)
+                            SharedOrderCard(
+                                order = order,
+                                onClick = { onOrderClick(order.id) }
+                            )
                         }
                     }
                 }

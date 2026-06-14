@@ -11,7 +11,6 @@ import androidx.compose.material3.Badge
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Surface
@@ -23,9 +22,9 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.k41s.scrollspree.domain.model.Order
-import com.k41s.scrollspree.ui.screens.admin.userOrder.users.orders.components.DetailRow
-import com.k41s.scrollspree.ui.screens.admin.userOrder.users.orders.components.InfoSection
-import com.k41s.scrollspree.ui.screens.admin.userOrder.users.orders.components.ProductThumbnail
+import com.k41s.scrollspree.ui.components.orders.DetailRow
+import com.k41s.scrollspree.ui.components.orders.InfoSection
+import com.k41s.scrollspree.ui.components.orders.ProductThumbnail
 import com.k41s.scrollspree.util.formatToString
 import com.k41s.scrollspree.util.toCurrencyDisplay
 

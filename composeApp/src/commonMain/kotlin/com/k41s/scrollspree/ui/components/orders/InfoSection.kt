@@ -1,4 +1,4 @@
-package com.k41s.scrollspree.ui.screens.admin.userOrder.users.orders.components
+package com.k41s.scrollspree.ui.components.orders
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

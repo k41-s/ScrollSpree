@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.dp
 import com.k41s.scrollspree.domain.model.Order
 import com.k41s.scrollspree.domain.model.User
 import com.k41s.scrollspree.ui.components.DateRangeSearch
-import com.k41s.scrollspree.ui.screens.admin.userOrder.components.AdminOrderCard
+import com.k41s.scrollspree.ui.components.orders.SharedOrderCard
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -143,7 +143,7 @@ fun AdminOrderListScreen(
                             }
                         } else {
                             items(items = orders, key = { it.id }) { order ->
-                                AdminOrderCard(order) { onOrderClick(order) }
+                                SharedOrderCard(order) { onOrderClick(order) }
                             }
                         }
                     }
