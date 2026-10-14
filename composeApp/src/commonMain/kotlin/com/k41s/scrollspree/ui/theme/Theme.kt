@@ -21,6 +21,7 @@ val LightColorScheme = lightColorScheme(
     onTertiary = Color.White,
     background = Color.White,
     onBackground = Color(0xFF000704),
+    outlineVariant = Color(0xFF909090),
     error = Color(0xFF610404)
 )
 
@@ -33,6 +34,7 @@ val DarkColorScheme = darkColorScheme(
     onTertiary = Color.Black,
     background = Color(0xFF000704),
     onBackground = Color.White,
+    outlineVariant = Color(0xFFA8A8A8),
     error = Color(0xFF610404)
 )
 
@@ -45,6 +47,7 @@ val BlackWhiteScheme = lightColorScheme(
     onTertiary = Color.White,
     background = Color.White,
     onBackground = Color(0xFF000704),
+    outlineVariant = Color(0xFF313030),
     error = Color(0xFF610404)
 )
 
